@@ -1,0 +1,7 @@
+# Autodetect text files
+* text=auto
+
+# Declare files that will always have LF line endings on checkout.
+*.cs text eol=crlf
+*.csproj text eol=crlf
+*.sln text eol=crlf
