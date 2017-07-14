@@ -15,6 +15,7 @@
 # Build results
 obj/
 bin/
+build/
 
 
 .DS_Store
