@@ -269,7 +269,11 @@ namespace Unity.Options
 
         internal static bool HasProgramOptionsAttribute(Type type)
         {
+#if NETCORE
+            return type.GetTypeInfo().GetCustomAttributes(typeof(ProgramOptionsAttribute), false).Any();
+#else
             return type.GetCustomAttributes(typeof(ProgramOptionsAttribute), false).Any();
+#endif
         }
 
         internal string[] Parse(IEnumerable<string> commandLine)
@@ -294,7 +298,11 @@ namespace Unity.Options
 
             foreach (var field in fields)
             {
+#if NETCORE
+                var options = (ProgramOptionsAttribute)type.GetTypeInfo().GetCustomAttributes(typeof(ProgramOptionsAttribute), false).First();
+#else
                 var options = (ProgramOptionsAttribute)type.GetCustomAttributes(typeof(ProgramOptionsAttribute), false).First();
+#endif
                 foreach (var name in OptionNamesFor(options, field))
                 {
                     optionSet.Add(
@@ -335,7 +343,11 @@ namespace Unity.Options
             if (field == null)
                 throw new ArgumentException($"No field on type {type} named {fieldName}");
 
+#if NETCORE
+            var options = (ProgramOptionsAttribute)type.GetTypeInfo().GetCustomAttributes(typeof(ProgramOptionsAttribute), false).First();
+#else
             var options = (ProgramOptionsAttribute)type.GetCustomAttributes(typeof(ProgramOptionsAttribute), false).First();
+#endif
             return $"--{OptionNamesFor(options, field).First()}".TrimEnd('=');
         }
 
@@ -370,7 +382,11 @@ namespace Unity.Options
 
         private static bool IsListField(FieldInfo field)
         {
+#if NETCORE
+            if (field.FieldType.GetTypeInfo().IsGenericType)
+#else
             if (field.FieldType.IsGenericType)
+#endif
             {
                 var genericType = field.FieldType.GetGenericTypeDefinition();
                 if (genericType.IsAssignableFrom(typeof(List<>)))
@@ -431,7 +447,11 @@ namespace Unity.Options
 
         private static object ParseValue(Type type, string value)
         {
+#if NETCORE
+            if (type.GetTypeInfo().IsEnum)
+#else
             if (type.IsEnum)
+#endif
                 return Enum.GetValues(type).Cast<object>().First(v => String.Equals(Enum.GetName(type, v), value, StringComparison.OrdinalIgnoreCase));
 
             var converted = Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
@@ -462,7 +482,11 @@ namespace Unity.Options
 
         public static string WriteArgumentsFile(string path, IEnumerable<string> args)
         {
+#if NETCORE
+            using (var writer = new StreamWriter(System.IO.File.OpenWrite(path)))
+#else
             using (var writer = new StreamWriter(path))
+#endif
             {
                 foreach (var arg in args)
                 {
