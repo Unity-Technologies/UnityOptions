@@ -13,12 +13,16 @@
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <!-- For some reason xbuild on OSX doesn't seem to fine SolutionDirectory, but it does have SolutionDir
+         And although SolutionDir does seem to work for xbuild and msbuild, R# intellisense is not happy about it
+         So to work around this, if SolutionDirectory is not defined, define it to SolutionDir-->
+    <SolutionDirectory Condition=" '$(SolutionDirectory)' == '' ">$(SolutionDir)</SolutionDirectory>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>../build/</OutputPath>
+    <OutputPath>$(SolutionDirectory)/build/</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -26,7 +30,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>../build/</OutputPath>
+    <OutputPath>$(SolutionDirectory)/build/</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>

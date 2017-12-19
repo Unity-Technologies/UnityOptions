@@ -193,6 +193,11 @@ namespace Unity.Options
             DisplayHelp(Console.Out, LoadOptionTypesFromAssembly(assembly, includeReferencedAssemblies));
         }
 
+        public static void DisplayHelp(Type[] optionTypes)
+        {
+            DisplayHelp(Console.Out, optionTypes);
+        }
+
         public static bool HelpRequested(string[] commandLine)
         {
             return commandLine.Count(v => v == "--h" || v == "--help" || v == "-help") > 0;
@@ -208,7 +213,9 @@ namespace Unity.Options
             return defaultOptions.Concat(explicitOptions);
         }
 
-        private static Type[] LoadOptionTypesFromAssembly(Assembly assembly, bool includeReferencedAssemblies)
+        public static Type[] LoadOptionTypesFromAssembly(Assembly assembly, bool includeReferencedAssemblies,
+            Func<AssemblyName, bool> shouldProcessReference = null,
+            Func<Assembly, Type[]> customTypeCollector = null)
         {
             var types = new List<Type>();
             var queue = new Stack<Assembly>();
@@ -222,7 +229,13 @@ namespace Unity.Options
                 if (!processed.Add(current.GetName()))
                     continue;
 
-                types.AddRange(current.GetTypes().Where(HasProgramOptionsAttribute));
+                Type[] typesFromAssembly;
+                if (customTypeCollector == null)
+                    typesFromAssembly = current.GetTypes();
+                else
+                    typesFromAssembly = customTypeCollector(current);
+
+                types.AddRange(typesFromAssembly.Where(HasProgramOptionsAttribute));
 
                 if (includeReferencedAssemblies)
                 {
@@ -232,6 +245,9 @@ namespace Unity.Options
                             referencedAssembly.Name.StartsWith("System") ||
                             referencedAssembly.Name.StartsWith("Mono.Cecil") ||
                             referencedAssembly.Name.StartsWith("Microsoft"))
+                            continue;
+
+                        if (shouldProcessReference != null && !shouldProcessReference(referencedAssembly))
                             continue;
 
                         if (!processed.Contains(referencedAssembly))
