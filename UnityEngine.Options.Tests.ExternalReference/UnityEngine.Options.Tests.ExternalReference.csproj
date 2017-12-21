@@ -12,6 +12,10 @@
     <AssemblyName>UnityEngine.Options.Tests.ExternalReference</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <!-- For some reason xbuild on OSX doesn't seem to fine SolutionDirectory, but it does have SolutionDir
+         And although SolutionDir does seem to work for xbuild and msbuild, R# intellisense is not happy about it
+         So to work around this, if SolutionDirectory is not defined, define it to SolutionDir-->
+    <SolutionDirectory Condition=" '$(SolutionDirectory)' == '' ">$(SolutionDir)</SolutionDirectory>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
