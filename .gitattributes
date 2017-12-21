@@ -2,6 +2,6 @@
 * text=auto
 
 # Declare files that will always have LF line endings on checkout.
-*.cs text eol=crlf
+*.cs text eol=lf
 *.csproj text eol=crlf
 *.sln text eol=crlf
