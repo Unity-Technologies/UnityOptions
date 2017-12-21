@@ -1,4 +1,0 @@
-#!/bin/sh
-
-BASEDIR=$(dirname $0)
-perl "$BASEDIR/format.pl" "$@"
