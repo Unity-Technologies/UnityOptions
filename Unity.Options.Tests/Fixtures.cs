@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Unity.Options.Tests
@@ -146,6 +147,27 @@ namespace Unity.Options.Tests
     public sealed class EnumArrayOptions
     {
         public static Values[] EnumArrayValue;
+    }
+
+    [Flags]
+    public enum FlagValues
+    {
+        One = 1,
+        Two = 2,
+        Three = 4,
+        Four = 8
+    }
+
+    [ProgramOptions]
+    public sealed class FlagsEnumOptions
+    {
+        public static FlagValues Flags;
+    }
+
+    [ProgramOptions]
+    public sealed class FlagsEnumArrayOptions
+    {
+        public static FlagValues[] FlagsArray;
     }
 
     [ProgramOptions]

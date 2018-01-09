@@ -382,6 +382,9 @@ namespace Unity.Options
 
         private static Action<string> ActionFor(ProgramOptionsAttribute options, FieldInfo field)
         {
+            if (field.FieldType.IsArray && IsFlagsEnum(field.FieldType.GetElementType()))
+                throw new NotSupportedException("The parsing of a flags array is not supported.  There would be no way to know which values to combine together into each element in the array");
+
             if (field.FieldType.IsArray)
                 return v => SetArrayType(field, v, options);
 
@@ -392,6 +395,9 @@ namespace Unity.Options
 
             if (field.FieldType == typeof(bool))
                 return v => SetBoolType(field, v);
+
+            if (IsFlagsEnum(field.FieldType))
+                return v => SetFlagsEnumType(field, v, options);
 
             return v => SetBasicType(field, v);
         }
@@ -456,19 +462,51 @@ namespace Unity.Options
             field.SetValue(null, ParseValue(field.FieldType, v));
         }
 
+        private static void SetFlagsEnumType(FieldInfo field, string value, ProgramOptionsAttribute options)
+        {
+            int finalValue =
+                SplitCollectionValues(options, value)
+                .Select(v => (int)ParseEnumValue(field.FieldType, v))
+                .Aggregate(0, (accum, current) => accum | current);
+            field.SetValue(null, finalValue);
+        }
+
         private static string[] SplitCollectionValues(ProgramOptionsAttribute options, string value)
         {
             return value.Split(new[] { options.CollectionSeparator ?? "," }, StringSplitOptions.None);
         }
 
-        private static object ParseValue(Type type, string value)
+        private static bool IsEnum(Type type)
         {
 #if NETCORE
-            if (type.GetTypeInfo().IsEnum)
+            return type.GetTypeInfo().IsEnum;
 #else
-            if (type.IsEnum)
+            return type.IsEnum;
 #endif
-                return Enum.GetValues(type).Cast<object>().First(v => String.Equals(Enum.GetName(type, v), value, StringComparison.OrdinalIgnoreCase));
+        }
+
+        private static bool IsFlagsEnum(Type type)
+        {
+            if (!IsEnum(type))
+                return false;
+
+#if NETCORE
+            var attributeTypes = type.GetTypeInfo().GetCustomAttributes(false);
+#else
+            var attributeTypes = type.GetCustomAttributes(false);
+#endif
+            return attributeTypes.Any(attr => attr is FlagsAttribute);
+        }
+
+        private static object ParseEnumValue(Type type, string value)
+        {
+            return Enum.GetValues(type).Cast<object>().First(v => String.Equals(Enum.GetName(type, v), value, StringComparison.OrdinalIgnoreCase));
+        }
+
+        private static object ParseValue(Type type, string value)
+        {
+            if (IsEnum(type))
+                return ParseEnumValue(type, value);
 
             var converted = Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
 

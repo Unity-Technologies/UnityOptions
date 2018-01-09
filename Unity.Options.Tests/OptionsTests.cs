@@ -468,6 +468,30 @@ namespace Unity.Options.Tests
         }
 
         [Test]
+        public void CanParseFlagsEnumOptions()
+        {
+            var commandLine = new[] {
+                "--flags=One,Three"
+            };
+            var types = new[] { typeof(FlagsEnumOptions) };
+
+            OptionsParser.Prepare(commandLine, types);
+
+            Assert.AreEqual(FlagValues.One | FlagValues.Three, FlagsEnumOptions.Flags);
+        }
+
+        [Test]
+        public void FlagsEnumArrayAreNotSupported()
+        {
+            var commandLine = new[] {
+                "--flags-array=One,Three"
+            };
+            var types = new[] { typeof(FlagsEnumArrayOptions) };
+
+            Assert.Throws<NotSupportedException>(() => OptionsParser.Prepare(commandLine, types));
+        }
+
+        [Test]
         public void CanParseBoolOptions()
         {
             var commandLine = new[] {
