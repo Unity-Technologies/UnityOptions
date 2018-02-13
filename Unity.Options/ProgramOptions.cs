@@ -74,30 +74,30 @@ namespace Unity.Options
 
         public const int HelpOutputColumnPadding = 50;
 
-        public static string[] Prepare(string[] commandLine, Type[] types)
+        public static string[] Prepare(string[] commandLine, Type[] types, Func<Type, string, object> customValueParser = null)
         {
             var parser = new OptionsParser();
             foreach (var type in types)
                 parser.AddType(type);
-            return parser.Parse(commandLine);
+            return parser.Parse(commandLine, customValueParser);
         }
 
-        public static string[] PrepareFromFile(string argFile, Type[] types)
+        public static string[] PrepareFromFile(string argFile, Type[] types, Func<Type, string, object> customValueParser = null)
         {
             if (!File.Exists(argFile))
                 throw new FileNotFoundException(argFile);
 
-            return Prepare(System.IO.File.ReadAllLines(argFile), types);
+            return Prepare(System.IO.File.ReadAllLines(argFile), types, customValueParser);
         }
 
-        public static string[] PrepareFromFile(string argFile, Assembly assembly, bool includeReferencedAssemblies = true)
+        public static string[] PrepareFromFile(string argFile, Assembly assembly, bool includeReferencedAssemblies = true, Func<Type, string, object> customValueParser = null)
         {
-            return Prepare(OptionsHelper.LoadArgumentsFromFile(argFile).ToArray(), assembly, includeReferencedAssemblies);
+            return Prepare(OptionsHelper.LoadArgumentsFromFile(argFile).ToArray(), assembly, includeReferencedAssemblies, customValueParser);
         }
 
-        public static string[] Prepare(string[] commandLine, Assembly assembly, bool includeReferencedAssemblies = true)
+        public static string[] Prepare(string[] commandLine, Assembly assembly, bool includeReferencedAssemblies = true, Func<Type, string, object> customValueParser = null)
         {
-            return Prepare(commandLine, LoadOptionTypesFromAssembly(assembly, includeReferencedAssemblies));
+            return Prepare(commandLine, LoadOptionTypesFromAssembly(assembly, includeReferencedAssemblies), customValueParser);
         }
 
         public static Dictionary<string, HelpInformation> ParseHelpTable(Type type, bool includeReferencedAssemblies = true)
@@ -292,23 +292,23 @@ namespace Unity.Options
 #endif
         }
 
-        internal string[] Parse(IEnumerable<string> commandLine)
+        internal string[] Parse(IEnumerable<string> commandLine, Func<Type, string, object> customValueParser)
         {
-            var optionSet = PrepareOptionSet();
+            var optionSet = PrepareOptionSet(customValueParser);
             return optionSet.Parse(commandLine).ToArray();
         }
 
-        private OptionSet PrepareOptionSet()
+        private OptionSet PrepareOptionSet(Func<Type, string, object> customValueParser)
         {
             var optionSet = new OptionSet();
 
             foreach (var type in _types)
-                ExtendOptionSet(optionSet, type);
+                ExtendOptionSet(optionSet, type, customValueParser);
 
             return optionSet;
         }
 
-        private void ExtendOptionSet(OptionSet optionSet, Type type)
+        private void ExtendOptionSet(OptionSet optionSet, Type type, Func<Type, string, object> customValueParser)
         {
             var fields = GetOptionFields(type);
 
@@ -324,7 +324,7 @@ namespace Unity.Options
                     optionSet.Add(
                         name,
                         DescriptionFor(field),
-                        ActionFor(options, field));
+                        ActionFor(options, field, customValueParser));
                 }
             }
         }
@@ -380,17 +380,17 @@ namespace Unity.Options
             return "";
         }
 
-        private static Action<string> ActionFor(ProgramOptionsAttribute options, FieldInfo field)
+        private static Action<string> ActionFor(ProgramOptionsAttribute options, FieldInfo field, Func<Type, string, object> customValueParser)
         {
             if (field.FieldType.IsArray && IsFlagsEnum(field.FieldType.GetElementType()))
                 throw new NotSupportedException("The parsing of a flags array is not supported.  There would be no way to know which values to combine together into each element in the array");
 
             if (field.FieldType.IsArray)
-                return v => SetArrayType(field, v, options);
+                return v => SetArrayType(field, v, options, customValueParser);
 
             if (IsListField(field))
             {
-                return v => SetListType(field, v, options);
+                return v => SetListType(field, v, options, customValueParser);
             }
 
             if (field.FieldType == typeof(bool))
@@ -399,7 +399,7 @@ namespace Unity.Options
             if (IsFlagsEnum(field.FieldType))
                 return v => SetFlagsEnumType(field, v, options);
 
-            return v => SetBasicType(field, v);
+            return v => SetBasicType(field, v, customValueParser);
         }
 
         private static bool IsListField(FieldInfo field)
@@ -418,18 +418,18 @@ namespace Unity.Options
             return false;
         }
 
-        private static void SetListType(FieldInfo field, string value, ProgramOptionsAttribute options)
+        private static void SetListType(FieldInfo field, string value, ProgramOptionsAttribute options, Func<Type, string, object> customValueParser)
         {
             var listType = field.FieldType;
             var list = (IList)field.GetValue(null) ?? (IList)Activator.CreateInstance(listType);
 
             foreach (var v in SplitCollectionValues(options, value))
-                list.Add(ParseValue(listType.GetGenericArguments()[0], v));
+                list.Add(ParseValue(listType.GetGenericArguments()[0], v, customValueParser));
 
             field.SetValue(null, list);
         }
 
-        private static void SetArrayType(FieldInfo field, string value, ProgramOptionsAttribute options)
+        private static void SetArrayType(FieldInfo field, string value, ProgramOptionsAttribute options, Func<Type, string, object> customValueParser)
         {
             var index = 0;
             var values = SplitCollectionValues(options, value);
@@ -447,7 +447,7 @@ namespace Unity.Options
                 array = (Array)Activator.CreateInstance(arrayType, new object[] {values.Length});
 
             foreach (var v in values)
-                array.SetValue(ParseValue(arrayType.GetElementType(), v), index++);
+                array.SetValue(ParseValue(arrayType.GetElementType(), v, customValueParser), index++);
 
             field.SetValue(null, array);
         }
@@ -457,9 +457,9 @@ namespace Unity.Options
             field.SetValue(null, true);
         }
 
-        private static void SetBasicType(FieldInfo field, string v)
+        private static void SetBasicType(FieldInfo field, string v, Func<Type, string, object> customValueParser)
         {
-            field.SetValue(null, ParseValue(field.FieldType, v));
+            field.SetValue(null, ParseValue(field.FieldType, v, customValueParser));
         }
 
         private static void SetFlagsEnumType(FieldInfo field, string value, ProgramOptionsAttribute options)
@@ -503,8 +503,15 @@ namespace Unity.Options
             return Enum.GetValues(type).Cast<object>().First(v => String.Equals(Enum.GetName(type, v), value, StringComparison.OrdinalIgnoreCase));
         }
 
-        private static object ParseValue(Type type, string value)
+        private static object ParseValue(Type type, string value, Func<Type, string, object> customValueParser)
         {
+            if (customValueParser != null)
+            {
+                var customParsed = customValueParser(type, value);
+                if (customParsed != null)
+                    return customParsed;
+            }
+
             if (IsEnum(type))
                 return ParseEnumValue(type, value);
 

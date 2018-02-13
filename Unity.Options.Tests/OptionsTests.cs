@@ -5,6 +5,7 @@ using NUnit.Framework;
 using UnityEngine.Options.Tests.AnotherReference;
 using UnityEngine.Options.Tests.ExternalReference;
 using System.Globalization;
+using System.Linq;
 using System.Threading;
 
 namespace Unity.Options.Tests
@@ -541,6 +542,34 @@ namespace Unity.Options.Tests
             OptionsParser.Prepare(commandLine, types);
 
             Assert.AreEqual(true, OptionsWithAliases.BoolOptionWithAlias);
+        }
+
+        [Test]
+        public void CanParseTypeOptionWithCustomParser()
+        {
+            var commandLine = new[] {
+                "--arg1=foo",
+                "--arg2=bar"
+            };
+            var types = new[] { typeof(OptionsWithCustomParsers) };
+
+            OptionsParser.Prepare(commandLine, types, OptionsWithCustomParsers.ParseCustomArgumentType);
+
+            Assert.AreEqual("foo", OptionsWithCustomParsers.Arg1.Value);
+            Assert.AreEqual("bar", OptionsWithCustomParsers.Arg2.Value);
+        }
+
+        [Test]
+        public void CanParseArrayOfTypeOptionWithCustomParser()
+        {
+            var commandLine = new[] {
+                "--array-arg=foo,bar"
+            };
+            var types = new[] { typeof(OptionsWithCustomParsers) };
+
+            OptionsParser.Prepare(commandLine, types, OptionsWithCustomParsers.ParseCustomArgumentType);
+
+            Assert.That(OptionsWithCustomParsers.ArrayArg.Select(t => t.Value), Is.EquivalentTo(new[] {"foo", "bar"}));
         }
 
         [Test]

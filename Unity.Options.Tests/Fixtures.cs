@@ -232,4 +232,44 @@ namespace Unity.Options.Tests
         [OptionAlias("multi-alias4")]
         public static string OptionWithMultipleAliases;
     }
+
+    [ProgramOptions]
+    public sealed class OptionsWithCustomParsers
+    {
+        public static CustomType1 Arg1;
+        public static CustomType2 Arg2;
+
+        public static CustomType1[] ArrayArg;
+
+        public static object ParseCustomArgumentType(Type fieldType, string value)
+        {
+            if (fieldType == typeof(CustomType1))
+                return new CustomType1(value);
+
+            if (fieldType == typeof(CustomType2))
+                return new CustomType2(value);
+
+            return null;
+        }
+
+        public class CustomType1
+        {
+            public CustomType1(string value)
+            {
+                Value = value;
+            }
+
+            public string Value { get; set; }
+        }
+
+        public class CustomType2
+        {
+            public CustomType2(string value)
+            {
+                Value = value;
+            }
+
+            public string Value { get; set; }
+        }
+    }
 }
