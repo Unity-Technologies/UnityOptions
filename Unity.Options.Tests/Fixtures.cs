@@ -272,20 +272,20 @@ namespace Unity.Options.Tests
             public string Value { get; set; }
         }
     }
-    
+
     [ProgramOptions]
     public sealed class RecreateOptions
     {
         public static string StringValue1;
-        
+
         public static string StringValue2;
 
         public static bool BoolValue1;
-        
+
         public static bool BoolValue2;
 
         public static string[] CollectionValue1;
-        
+
         public static string[] CollectionValue2;
     }
 }

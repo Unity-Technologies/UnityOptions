@@ -202,38 +202,38 @@ namespace Unity.Options
         {
             return commandLine.Count(v => v == "--h" || v == "--help" || v == "-help") > 0;
         }
-        
-        public static string[] RecreateArgumentsFromCurrentState(Type optionType) 
-        { 
-            var args = new List<string>(); 
-            var optionFields = GetOptionFields(optionType); 
-            foreach (var field in optionFields) 
-            { 
-                var value = field.GetValue(null); 
- 
-                if (value == null) 
-                    continue; 
- 
-                var name = OptionNameFor(optionType, field.Name); 
- 
-                if (field.FieldType == typeof(bool)) 
-                { 
-                    if (value is bool vBool && vBool) 
-                        args.Add($"{name}"); 
-                } 
-                else if (field.FieldType.IsArray || IsListField(field)) 
-                { 
-                    foreach (var item in (IEnumerable)value) 
-                        args.Add($"{name}={item}"); 
-                } 
-                else 
-                { 
-                    args.Add($"{name}={value}"); 
-                } 
-            } 
- 
-            return args.ToArray(); 
-        } 
+
+        public static string[] RecreateArgumentsFromCurrentState(Type optionType)
+        {
+            var args = new List<string>();
+            var optionFields = GetOptionFields(optionType);
+            foreach (var field in optionFields)
+            {
+                var value = field.GetValue(null);
+
+                if (value == null)
+                    continue;
+
+                var name = OptionNameFor(optionType, field.Name);
+
+                if (field.FieldType == typeof(bool))
+                {
+                    if (value is bool vBool && vBool)
+                        args.Add($"{name}");
+                }
+                else if (field.FieldType.IsArray || IsListField(field))
+                {
+                    foreach (var item in (IEnumerable)value)
+                        args.Add($"{name}={item}");
+                }
+                else
+                {
+                    args.Add($"{name}={value}");
+                }
+            }
+
+            return args.ToArray();
+        }
 
         private static IEnumerable<FieldInfo> GetOptionFields(Type optionType)
         {
