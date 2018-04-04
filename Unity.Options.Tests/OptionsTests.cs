@@ -695,5 +695,17 @@ namespace Unity.Options.Tests
         {
             Assert.IsFalse(OptionsParser.HelpRequested(new[] { "--other", "--other2"}));
         }
+
+        [Test]
+        public void TestRecreateArgumentsFromCurrentState()
+        {
+            RecreateOptions.StringValue1 = "Hello";
+            RecreateOptions.BoolValue1 = true;
+            RecreateOptions.CollectionValue1 = new[] {"Foo", "Bar"};
+
+            var expected = new[] {"--string-value1=Hello", "--bool-value1", "--collection-value1=Foo", "--collection-value1=Bar"};
+            var result = OptionsParser.RecreateArgumentsFromCurrentState(typeof(RecreateOptions));
+            Assert.That(result, Is.EquivalentTo(expected));
+        }
     }
 }
