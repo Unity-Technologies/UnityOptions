@@ -19,7 +19,7 @@ public static class Options
 {
     [HelpDetails("This is the first option")]
     public static string SomeValue;
-    
+
     [HelpDetails("This is the first option")]
     public static string AnotherValue;
 

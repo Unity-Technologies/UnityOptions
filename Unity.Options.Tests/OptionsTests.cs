@@ -61,7 +61,8 @@ namespace Unity.Options.Tests
         [Test]
         public void SupportOptionGroups()
         {
-            var commandLine = new[] {
+            var commandLine = new[]
+            {
                 "--multiple-simple-options.value=10",
                 "--multiple-simple-options.second-value=11"
             };
@@ -76,7 +77,8 @@ namespace Unity.Options.Tests
         [Test]
         public void SupportCustomOptionGroups()
         {
-            var commandLine = new[] {
+            var commandLine = new[]
+            {
                 "--custom.value=10",
                 "--custom.second-value=11"
             };
@@ -91,7 +93,8 @@ namespace Unity.Options.Tests
         [Test]
         public void CanParseBasicOptionTypes()
         {
-            var commandLine = new[] {
+            var commandLine = new[]
+            {
                 "--char-value=1",
                 "--byte-value=2",
                 "--s-byte-value=3",
@@ -154,7 +157,8 @@ namespace Unity.Options.Tests
         [Test]
         public void SupportArrayOptions()
         {
-            var commandLine = new[] {
+            var commandLine = new[]
+            {
                 "--int-array=1,2,3"
             };
             var types = new[] { typeof(ArrayOptions) };
@@ -170,7 +174,8 @@ namespace Unity.Options.Tests
         [Test]
         public void SupportArrayOptionsWithCustomSeparator()
         {
-            var commandLine = new[] {
+            var commandLine = new[]
+            {
                 "--int-array=1|2|3"
             };
             var types = new[] { typeof(CustomArrayOptions) };
@@ -186,7 +191,8 @@ namespace Unity.Options.Tests
         [Test]
         public void SupportArrayOptionsWithRepetition()
         {
-            var commandLine = new[] {
+            var commandLine = new[]
+            {
                 "--int-array=1",
                 "--int-array=2",
                 "--int-array=3"
@@ -204,7 +210,8 @@ namespace Unity.Options.Tests
         [Test]
         public void CanParseArrayBasicOptionTypes()
         {
-            var commandLine = new[] {
+            var commandLine = new[]
+            {
                 "--char-value=1,a",
                 "--byte-value=2,22",
                 "--s-byte-value=3,33",
@@ -279,7 +286,8 @@ namespace Unity.Options.Tests
         [Test]
         public void SupportListOptions()
         {
-            var commandLine = new[] {
+            var commandLine = new[]
+            {
                 "--int-list=1,2,3"
             };
             var types = new[] { typeof(ListOptions) };
@@ -295,7 +303,8 @@ namespace Unity.Options.Tests
         [Test]
         public void SupportListOptionsWithCustomSeparator()
         {
-            var commandLine = new[] {
+            var commandLine = new[]
+            {
                 "--int-list=1|2|3"
             };
             var types = new[] { typeof(CustomListOptions) };
@@ -311,7 +320,8 @@ namespace Unity.Options.Tests
         [Test]
         public void SupportListOptionsWithRepetition()
         {
-            var commandLine = new[] {
+            var commandLine = new[]
+            {
                 "--int-list=1",
                 "--int-list=2",
                 "--int-list=3"
@@ -329,7 +339,8 @@ namespace Unity.Options.Tests
         [Test]
         public void CanParseListBasicOptionTypes()
         {
-            var commandLine = new[] {
+            var commandLine = new[]
+            {
                 "--char-list=1,a",
                 "--byte-list=2,22",
                 "--s-byte-list=3,33",
@@ -429,7 +440,8 @@ namespace Unity.Options.Tests
         [Test]
         public void CanProvideOptionsFromAssemblyReference()
         {
-            var commandLine = new[] {
+            var commandLine = new[]
+            {
                 "--value=10",
                 "--name=gabriele"
             };
@@ -443,7 +455,8 @@ namespace Unity.Options.Tests
         [Test]
         public void CanParseEnumOptions()
         {
-            var commandLine = new[] {
+            var commandLine = new[]
+            {
                 "--enum-value=First"
             };
             var types = new[] { typeof(EnumOptions) };
@@ -456,7 +469,8 @@ namespace Unity.Options.Tests
         [Test]
         public void CanParseEnumArrayOptions()
         {
-            var commandLine = new[] {
+            var commandLine = new[]
+            {
                 "--enum-array-value=First,Second"
             };
             var types = new[] { typeof(EnumArrayOptions) };
@@ -471,7 +485,8 @@ namespace Unity.Options.Tests
         [Test]
         public void CanParseFlagsEnumOptions()
         {
-            var commandLine = new[] {
+            var commandLine = new[]
+            {
                 "--flags=One,Three"
             };
             var types = new[] { typeof(FlagsEnumOptions) };
@@ -484,7 +499,8 @@ namespace Unity.Options.Tests
         [Test]
         public void FlagsEnumArrayAreNotSupported()
         {
-            var commandLine = new[] {
+            var commandLine = new[]
+            {
                 "--flags-array=One,Three"
             };
             var types = new[] { typeof(FlagsEnumArrayOptions) };
@@ -495,7 +511,8 @@ namespace Unity.Options.Tests
         [Test]
         public void CanParseBoolOptions()
         {
-            var commandLine = new[] {
+            var commandLine = new[]
+            {
                 "--bool-value"
             };
             var types = new[] { typeof(BoolOptions) };
@@ -508,7 +525,8 @@ namespace Unity.Options.Tests
         [Test]
         public void CanParseOptionUsingItsAlias()
         {
-            var commandLine = new[] {
+            var commandLine = new[]
+            {
                 "--alias=hello"
             };
             var types = new[] { typeof(OptionsWithAliases) };
@@ -521,7 +539,8 @@ namespace Unity.Options.Tests
         [Test]
         public void CanParseOptionWithMultiAliasesUsingItsAlias()
         {
-            var commandLine = new[] {
+            var commandLine = new[]
+            {
                 "--multi-alias4=hello"
             };
             var types = new[] { typeof(OptionsWithAliases) };
@@ -534,7 +553,8 @@ namespace Unity.Options.Tests
         [Test]
         public void CanParseBoolOptionUsingItsAlias()
         {
-            var commandLine = new[] {
+            var commandLine = new[]
+            {
                 "--enable-alias"
             };
             var types = new[] { typeof(OptionsWithAliases) };
@@ -547,7 +567,8 @@ namespace Unity.Options.Tests
         [Test]
         public void CanParseTypeOptionWithCustomParser()
         {
-            var commandLine = new[] {
+            var commandLine = new[]
+            {
                 "--arg1=foo",
                 "--arg2=bar"
             };
@@ -562,7 +583,8 @@ namespace Unity.Options.Tests
         [Test]
         public void CanParseArrayOfTypeOptionWithCustomParser()
         {
-            var commandLine = new[] {
+            var commandLine = new[]
+            {
                 "--array-arg=foo,bar"
             };
             var types = new[] { typeof(OptionsWithCustomParsers) };

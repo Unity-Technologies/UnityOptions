@@ -498,8 +498,8 @@ namespace Unity.Options
         {
             int finalValue =
                 SplitCollectionValues(options, value)
-                .Select(v => (int)ParseEnumValue(field.FieldType, v))
-                .Aggregate(0, (accum, current) => accum | current);
+                    .Select(v => (int)ParseEnumValue(field.FieldType, v))
+                    .Aggregate(0, (accum, current) => accum | current);
             field.SetValue(null, finalValue);
         }
 
