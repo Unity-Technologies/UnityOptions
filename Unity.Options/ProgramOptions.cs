@@ -403,7 +403,11 @@ namespace Unity.Options
         {
             return NameBuilder.Matches(name)
                 .Cast<Match>()
-                .Select(m => m.Value.ToLower())
+#if NETCORE
+                .Select(m => m.Value.ToLowerInvariant())
+#else
+                .Select(m => m.Value.ToLower(CultureInfo.InvariantCulture))
+#endif
                 .Aggregate((buff, s) => buff + "-" + s);
         }
 
