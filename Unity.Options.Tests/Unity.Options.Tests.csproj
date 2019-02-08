@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="Fixtures.cs" />
     <Compile Include="OptionsTests.cs" />
+    <Compile Include="ResponseFileTests.cs" />
     <Compile Include="TempFile.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -74,12 +74,12 @@ namespace Unity.Options
 
         public const int HelpOutputColumnPadding = 50;
 
-        public static string[] Prepare(string[] commandLine, Type[] types, Func<Type, string, object> customValueParser = null)
+        public static string[] Prepare(string[] commandLine, Type[] types, Func<Type, string, object> customValueParser = null, string currentDirectory = null)
         {
             var parser = new OptionsParser();
             foreach (var type in types)
                 parser.AddType(type);
-            return parser.Parse(commandLine, customValueParser);
+            return parser.Parse(commandLine, customValueParser, currentDirectory);
         }
 
         public static string[] PrepareFromFile(string argFile, Type[] types, Func<Type, string, object> customValueParser = null)
@@ -324,10 +324,10 @@ namespace Unity.Options
 #endif
         }
 
-        internal string[] Parse(IEnumerable<string> commandLine, Func<Type, string, object> customValueParser)
+        internal string[] Parse(IEnumerable<string> commandLine, Func<Type, string, object> customValueParser, string currentDirectory)
         {
             var optionSet = PrepareOptionSet(customValueParser);
-            return optionSet.Parse(commandLine).ToArray();
+            return optionSet.Parse(commandLine, currentDirectory).ToArray();
         }
 
         private OptionSet PrepareOptionSet(Func<Type, string, object> customValueParser)
