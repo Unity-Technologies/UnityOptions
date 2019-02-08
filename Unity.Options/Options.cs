@@ -131,6 +131,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+using Unity.Options;
 
 #if LINQ
 using System.Linq;
@@ -734,14 +735,38 @@ namespace NDesk.Options
         }
 
 #else
-        public List<string> Parse(IEnumerable<string> arguments)
+        public List<string> Parse(IEnumerable<string> arguments, string currentDirectory = null)
         {
             OptionContext c = CreateOptionContext();
             c.OptionIndex = -1;
             bool process = true;
+
+            if (currentDirectory == null)
+                currentDirectory = Environment.CurrentDirectory;
+            var allArguments = new List<string>();
+            foreach (var arg in arguments)
+            {
+                if (arg[0] == '@')
+                {
+                    var path = arg.Substring(1);
+                    if (!Path.IsPathRooted(path))
+                        path = Path.Combine(currentDirectory, path);
+                    
+                    if (!File.Exists(path))
+                        throw new FileNotFoundException(path);
+                    
+                    foreach(var responseFileArg in OptionsHelper.LoadArgumentsFromFile(path))
+                        allArguments.Add(responseFileArg);
+                }
+                else
+                {
+                    allArguments.Add(arg);
+                }
+            }
+            
             List<string> unprocessed = new List<string>();
             Option def = Contains("<>") ? this["<>"] : null;
-            foreach (string argument in arguments)
+            foreach (string argument in allArguments)
             {
                 ++c.OptionIndex;
                 if (argument == "--")
