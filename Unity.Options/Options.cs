@@ -735,6 +735,67 @@ namespace NDesk.Options
         }
 
 #else
+        private IEnumerable<string> ParseResponseFileLines(IEnumerable<string> responseFileLines)
+        {
+            foreach (var rawResponseFileText in responseFileLines)
+            {
+                var responseFileText = rawResponseFileText.Trim();
+                int idx = 0;
+                while (idx < responseFileText.Length)
+                {
+                    while (idx < responseFileText.Length && char.IsWhiteSpace(responseFileText[idx]))
+                    {
+                        idx++;
+                    }
+                    if (idx == responseFileText.Length)
+                    {
+                        break;
+                    }
+                    StringBuilder argBuilder = new StringBuilder();
+                    bool inquote = false;
+                    while (true)
+                    {
+                        bool copyChar = true;
+                        int numBackslash = 0;
+                        while (idx < responseFileText.Length && responseFileText[idx] == '\\')
+                        {
+                            numBackslash++;
+                            idx++;
+                        }
+
+                        if (idx < responseFileText.Length && responseFileText[idx] == '"')
+                        {
+                            if ((numBackslash % 2) == 0)
+                            {
+                                if (inquote && (idx + 1) < responseFileText.Length && responseFileText[idx + 1] == '"')
+                                {
+                                    idx++;
+                                }
+                                else
+                                {
+                                    copyChar = false;
+                                    inquote = !inquote;
+                                }
+                            }
+                            numBackslash /= 2;
+                        }
+
+                        argBuilder.Append(new String('\\', numBackslash));
+                        if (idx == responseFileText.Length || (!inquote && Char.IsWhiteSpace(responseFileText[idx])))
+                            break;
+
+                        if (copyChar)
+                            argBuilder.Append(responseFileText[idx]);
+
+                        idx++;
+                    }
+
+                    yield return argBuilder.ToString();
+                }
+            }
+        }
+
+
         public List<string> Parse(IEnumerable<string> arguments, string currentDirectory = null)
         {
             OptionContext c = CreateOptionContext();
@@ -755,7 +816,7 @@ namespace NDesk.Options
                     if (!File.Exists(path))
                         throw new FileNotFoundException(path);
                     
-                    foreach(var responseFileArg in OptionsHelper.LoadArgumentsFromFile(path))
+                    foreach(var responseFileArg in ParseResponseFileLines(OptionsHelper.LoadArgumentsFromFile(path)))
                         allArguments.Add(responseFileArg);
                 }
                 else
