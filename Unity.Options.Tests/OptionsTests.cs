@@ -107,7 +107,8 @@ namespace Unity.Options.Tests
                 "--float-value=10.42",
                 "--double-value=11.33",
                 "--bool-value",
-                "--string-value=gabriele farina"
+                "--string-value-with-spaces=gabriele farina",
+                "--string-value-no-spaces=gabrielefarina"
             };
             var types = new[] { typeof(BasicTypesOptions) };
 
@@ -125,7 +126,8 @@ namespace Unity.Options.Tests
             Assert.AreEqual(10.42f, BasicTypesOptions.FloatValue);
             Assert.AreEqual(11.33, BasicTypesOptions.DoubleValue);
             Assert.AreEqual(true, BasicTypesOptions.BoolValue);
-            Assert.AreEqual("gabriele farina", BasicTypesOptions.StringValue);
+            Assert.AreEqual("gabriele farina", BasicTypesOptions.StringValueWithSpaces);
+            Assert.AreEqual("gabrielefarina", BasicTypesOptions.StringValueNoSpaces);
         }
 
         [Test]
@@ -597,7 +599,7 @@ namespace Unity.Options.Tests
         [Test]
         public void OptionNameForOnStringField()
         {
-            Assert.AreEqual("--string-value", OptionsParser.OptionNameFor(typeof(BasicTypesOptions), nameof(BasicTypesOptions.StringValue)));
+            Assert.AreEqual("--string-value-with-spaces", OptionsParser.OptionNameFor(typeof(BasicTypesOptions), nameof(BasicTypesOptions.StringValueWithSpaces)));
         }
 
         [Test]
