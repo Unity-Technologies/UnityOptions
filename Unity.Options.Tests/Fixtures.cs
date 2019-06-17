@@ -56,7 +56,26 @@ namespace Unity.Options.Tests
         public static float FloatValue;
         public static double DoubleValue;
         public static bool BoolValue;
-        public static string StringValue;
+        public static string StringValueNoSpaces;
+        public static string StringValueWithSpaces;
+
+        public static void SetupDefaults()
+        {
+            CharValue = (char)0;
+            ByteValue = 0;
+            SByteValue = 0;
+            ShortValue = 0;
+            UShortValue = 0;
+            IntValue = 0;
+            UIntValue = 0;
+            LongValue = 0;
+            ULongValue = 0;
+            FloatValue = 0;
+            DoubleValue = 0;
+            BoolValue = false;
+            StringValueNoSpaces = string.Empty;
+            StringValueWithSpaces = string.Empty;
+        }
     }
 
     [ProgramOptions]

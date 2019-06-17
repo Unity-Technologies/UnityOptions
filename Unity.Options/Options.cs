@@ -810,6 +810,10 @@ namespace NDesk.Options
                 if (arg[0] == '@')
                 {
                     var path = arg.Substring(1);
+
+                    if (path[0] == '"' && path[path.Length - 1] == '"')
+                        path = path.Substring(1, path.Length - 2);
+
                     if (!Path.IsPathRooted(path))
                         path = Path.Combine(currentDirectory, path);
                     
