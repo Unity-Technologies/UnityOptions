@@ -67,7 +67,7 @@ namespace Unity.Options.Tests
                 Assert.Throws<FileNotFoundException>(() => OptionsParser.Prepare(commandLine, types));
             }
         }
-        
+
         [Test]
         public void VerifyOptionsFromResponseFileMultiLine()
         {
