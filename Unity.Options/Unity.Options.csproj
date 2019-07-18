@@ -1,17 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$(SolutionDir)/GlobalProjectProps/Libraries-NetStandard.props" />
   <PropertyGroup>
     <ProjectGuid>{783F0782-FA64-49FB-9B89-8B4A56003A70}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>Unity.Options</RootNamespace>
-    <AssemblyName>Unity.Options</AssemblyName>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <FileAlignment>512</FileAlignment>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <!-- For some reason xbuild on OSX doesn't seem to fine SolutionDirectory, but it does have SolutionDir
-         And although SolutionDir does seem to work for xbuild and msbuild, R# intellisense is not happy about it
-         So to work around this, if SolutionDirectory is not defined, define it to SolutionDir-->
-    <SolutionDirectory Condition=" '$(SolutionDirectory)' == '' ">$(SolutionDir)</SolutionDirectory>
-    <OutputPath>$(SolutionDirectory)/build/</OutputPath>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
 </Project>
