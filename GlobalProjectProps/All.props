@@ -1,0 +1,7 @@
+<Project>
+  <PropertyGroup>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <TargetFrameworkRootPath>$(SolutionDir)../../../il2cpp-deps/artifacts/Stevedore/reference-assemblies-netfx/builds</TargetFrameworkRootPath>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+</Project>
