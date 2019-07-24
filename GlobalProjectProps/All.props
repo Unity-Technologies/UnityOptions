@@ -1,7 +1,24 @@
 <Project>
+  <!--
+  Here are the scenarios we need to consider
+  1) Checked out as it's own repository with il2cpp-deps available as a sibling
+  2) Checked out as it's own repository with out il2cpp-deps available as a sibling
+  3) Being built from Unity.Options.sln under il2cpp's subrepo directory (<il2cpp>/repos/UnityOptions)
+  -->
+  <Choose>
+    <When Condition="Exists('$(SolutionDir)../il2cpp-deps')">
+      <PropertyGroup>
+        <TargetFrameworkRootPath>$(SolutionDir)../il2cpp-deps/artifacts/Stevedore/reference-assemblies-netfx/builds</TargetFrameworkRootPath>
+      </PropertyGroup>
+    </When>
+    <When Condition="Exists('$(SolutionDir)../../../il2cpp-deps')">
+      <PropertyGroup>
+        <TargetFrameworkRootPath>$(SolutionDir)../../../il2cpp-deps/artifacts/Stevedore/reference-assemblies-netfx/builds</TargetFrameworkRootPath>
+      </PropertyGroup>
+    </When>
+  </Choose>
   <PropertyGroup>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <TargetFrameworkRootPath>$(SolutionDir)../../../il2cpp-deps/artifacts/Stevedore/reference-assemblies-netfx/builds</TargetFrameworkRootPath>
     <Deterministic>true</Deterministic>
   </PropertyGroup>
 </Project>
