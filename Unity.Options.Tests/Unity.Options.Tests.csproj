@@ -3,8 +3,6 @@
   <PropertyGroup>
     <ProjectGuid>{64149EC4-87B8-4E21-96BE-3691A72E9034}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Unity.Options.Tests</RootNamespace>
-    <AssemblyName>Unity.Options.Tests</AssemblyName>
     <TargetFramework>net471</TargetFramework>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
