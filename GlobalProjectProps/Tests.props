@@ -2,6 +2,6 @@
   <Import Project="All.props" />
   <PropertyGroup>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <OutputPath>$(SolutionDirectory)/build/</OutputPath>
+    <OutputPath>$(SolutionDir)/build/</OutputPath>
   </PropertyGroup>
 </Project>
