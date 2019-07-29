@@ -1,7 +1,0 @@
-<Project>
-  <Import Project="Libraries.props" />
-  <PropertyGroup>
-    <!--<TargetFramework>netstandard2.0</TargetFramework>-->
-    <TargetFramework>net471</TargetFramework>
-  </PropertyGroup>
-</Project>
