@@ -203,7 +203,7 @@ namespace Unity.Options
             return commandLine.Count(v => v == "--h" || v == "--help" || v == "-help") > 0;
         }
 
-        public static string[] RecreateArgumentsFromCurrentState(Type optionType)
+        public static string[] RecreateArgumentsFromCurrentState(Type optionType, Func<FieldInfo, object, bool> predicate = null)
         {
             var args = new List<string>();
             var optionFields = GetOptionFields(optionType);
@@ -212,6 +212,9 @@ namespace Unity.Options
                 var value = field.GetValue(null);
 
                 if (value == null)
+                    continue;
+                
+                if (predicate != null && !predicate(field, value))
                     continue;
 
                 var name = OptionNameFor(optionType, field.Name);
@@ -237,7 +240,8 @@ namespace Unity.Options
 
         private static IEnumerable<FieldInfo> GetOptionFields(Type optionType)
         {
-            var defaultOptions = optionType.GetFields(BindingFlags.Static | BindingFlags.Public);
+            var defaultOptions = optionType.GetFields(BindingFlags.Static | BindingFlags.Public)
+                .Where(field => !field.IsLiteral);
 
             var explicitOptions = optionType.GetFields(BindingFlags.Static | BindingFlags.NonPublic)
                 .Where(field => field.GetCustomAttributes(typeof(OptionAttribute), false).Any());
