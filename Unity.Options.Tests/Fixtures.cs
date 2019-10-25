@@ -307,4 +307,12 @@ namespace Unity.Options.Tests
 
         public static string[] CollectionValue2;
     }
+    
+    [ProgramOptions]
+    public sealed class RecreateOptions2
+    {
+        public static string StringValue1;
+
+        public const string ShouldNotBeIncluded = "No!";
+    }
 }

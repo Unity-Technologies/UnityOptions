@@ -731,5 +731,33 @@ namespace Unity.Options.Tests
             var result = OptionsParser.RecreateArgumentsFromCurrentState(typeof(RecreateOptions));
             Assert.That(result, Is.EquivalentTo(expected));
         }
+        
+        [Test]
+        public void TestRecreateArgumentsFromCurrentStateCanBeFiltered()
+        {
+            RecreateOptions.StringValue1 = "Hello";
+            RecreateOptions.BoolValue1 = true;
+            RecreateOptions.CollectionValue1 = new[] {"Foo", "Bar"};
+
+            var expected = new[] {"--string-value1=Hello", "--collection-value1=Foo", "--collection-value1=Bar"};
+            var result = OptionsParser.RecreateArgumentsFromCurrentState(typeof(RecreateOptions), (field, value) =>
+            {
+                if (field.Name == nameof(RecreateOptions.BoolValue1))
+                    return false;
+
+                return true;
+            });
+            Assert.That(result, Is.EquivalentTo(expected));
+        }
+        
+        [Test]
+        public void TestRecreateArgumentsFromCurrentStateDoesNotIncludeConstsAreOptions()
+        {
+            RecreateOptions2.StringValue1 = "Hello";
+
+            var expected = new[] {"--string-value1=Hello" };
+            var result = OptionsParser.RecreateArgumentsFromCurrentState(typeof(RecreateOptions2));
+            Assert.That(result, Is.EquivalentTo(expected));
+        }
     }
 }
