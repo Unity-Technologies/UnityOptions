@@ -731,7 +731,7 @@ namespace Unity.Options.Tests
             var result = OptionsParser.RecreateArgumentsFromCurrentState(typeof(RecreateOptions));
             Assert.That(result, Is.EquivalentTo(expected));
         }
-        
+
         [Test]
         public void TestRecreateArgumentsFromCurrentStateCanBeFiltered()
         {
@@ -749,7 +749,7 @@ namespace Unity.Options.Tests
             });
             Assert.That(result, Is.EquivalentTo(expected));
         }
-        
+
         [Test]
         public void TestRecreateArgumentsFromCurrentStateDoesNotIncludeConstsAreOptions()
         {

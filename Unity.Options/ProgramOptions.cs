@@ -213,7 +213,7 @@ namespace Unity.Options
 
                 if (value == null)
                     continue;
-                
+
                 if (predicate != null && !predicate(field, value))
                     continue;
 

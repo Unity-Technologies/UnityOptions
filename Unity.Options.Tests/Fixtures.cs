@@ -307,7 +307,7 @@ namespace Unity.Options.Tests
 
         public static string[] CollectionValue2;
     }
-    
+
     [ProgramOptions]
     public sealed class RecreateOptions2
     {
