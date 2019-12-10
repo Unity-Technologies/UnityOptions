@@ -389,6 +389,21 @@ namespace Unity.Options
             }
         }
 
+        internal static string OptionNameFor(Type type, string fieldName, out Type fieldType)
+        {
+            var field = GetOptionFields(type).FirstOrDefault(f => f.Name == fieldName);
+            if (field == null)
+                throw new ArgumentException($"No field on type {type} named {fieldName}");
+            fieldType = field.FieldType;
+
+#if NETCORE
+            var options = (ProgramOptionsAttribute)type.GetTypeInfo().GetCustomAttributes(typeof(ProgramOptionsAttribute), false).First();
+#else
+            var options = (ProgramOptionsAttribute)type.GetCustomAttributes(typeof(ProgramOptionsAttribute), false).First();
+#endif
+            return $"--{OptionNamesFor(options, field).First()}".TrimEnd('=');
+        }
+
         public static string OptionNameFor(Type type, string fieldName)
         {
             var field = GetOptionFields(type).FirstOrDefault(f => f.Name == fieldName);
