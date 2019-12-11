@@ -74,12 +74,22 @@ namespace Unity.Options
 
         public const int HelpOutputColumnPadding = 50;
 
+        public static string[] PrepareInstances(string[] commandLine, object[] optionInstances, Func<Type, string, object> customValueParser = null, string currentDirectory = null)
+        {
+            return Prepare(commandLine, optionInstances.Select(o => o.GetType()).ToArray(), customValueParser, currentDirectory, optionInstances);
+        }
+
         public static string[] Prepare(string[] commandLine, Type[] types, Func<Type, string, object> customValueParser = null, string currentDirectory = null)
+        {
+            return Prepare(commandLine, types, customValueParser, currentDirectory, null);
+        }
+
+        static string[] Prepare(string[] commandLine, Type[] types, Func<Type, string, object> customValueParser, string currentDirectory, object[] instances)
         {
             var parser = new OptionsParser();
             foreach (var type in types)
                 parser.AddType(type);
-            return parser.Parse(commandLine, customValueParser, currentDirectory);
+            return parser.Parse(commandLine, customValueParser, currentDirectory, instances);
         }
 
         public static string[] PrepareFromFile(string argFile, Type[] types, Func<Type, string, object> customValueParser = null)
@@ -111,7 +121,7 @@ namespace Unity.Options
 
             foreach (var optionsTypes in types)
             {
-                foreach (var fieldInfo in GetOptionFields(optionsTypes))
+                foreach (var fieldInfo in GetOptionFields(optionsTypes, OptionFieldSelection.Any))
                 {
                     var helpAttrs = fieldInfo.GetCustomAttributes(typeof(HelpDetailsAttribute), false).ToArray();
 
@@ -203,13 +213,23 @@ namespace Unity.Options
             return commandLine.Count(v => v == "--h" || v == "--help" || v == "-help") > 0;
         }
 
+        public static string[] RecreateArgumentsFromCurrentState(object optionInstance, Func<FieldInfo, object, bool> predicate = null)
+        {
+            return RecreateArgumentsFromCurrentState(optionInstance.GetType(), predicate, optionInstance);
+        }
+
         public static string[] RecreateArgumentsFromCurrentState(Type optionType, Func<FieldInfo, object, bool> predicate = null)
         {
+            return RecreateArgumentsFromCurrentState(optionType, predicate, null);
+        }
+
+        static string[] RecreateArgumentsFromCurrentState(Type optionType, Func<FieldInfo, object, bool> predicate, object instance)
+        {
             var args = new List<string>();
-            var optionFields = GetOptionFields(optionType);
+            var optionFields = GetOptionFields(optionType, instance == null ? OptionFieldSelection.Static : OptionFieldSelection.Instance);
             foreach (var field in optionFields)
             {
-                var value = field.GetValue(null);
+                var value = field.GetValue(instance);
 
                 if (value == null)
                     continue;
@@ -238,15 +258,31 @@ namespace Unity.Options
             return args.ToArray();
         }
 
-        private static IEnumerable<FieldInfo> GetOptionFields(Type optionType)
+        private static IEnumerable<FieldInfo> GetOptionFields(Type optionType, OptionFieldSelection selection)
         {
-            var defaultOptions = optionType.GetFields(BindingFlags.Static | BindingFlags.Public)
+            BindingFlags bindingFlagForMode = BindingFlagsForSelection(selection);
+            var defaultOptions = optionType.GetFields(bindingFlagForMode | BindingFlags.Public)
                 .Where(field => !field.IsLiteral);
 
-            var explicitOptions = optionType.GetFields(BindingFlags.Static | BindingFlags.NonPublic)
+            var explicitOptions = optionType.GetFields(bindingFlagForMode | BindingFlags.NonPublic)
                 .Where(field => field.GetCustomAttributes(typeof(OptionAttribute), false).Any());
 
             return defaultOptions.Concat(explicitOptions);
+        }
+
+        static BindingFlags BindingFlagsForSelection(OptionFieldSelection selection)
+        {
+            switch (selection)
+            {
+                case OptionFieldSelection.Static:
+                    return BindingFlags.Static;
+                case OptionFieldSelection.Instance:
+                    return BindingFlags.Instance;
+                case OptionFieldSelection.Any:
+                    return BindingFlags.Static | BindingFlags.Instance;
+                default:
+                    throw new ArgumentException(nameof(selection));
+            }
         }
 
         public static Type[] LoadOptionTypesFromAssembly(Assembly assembly, bool includeReferencedAssemblies,
@@ -328,25 +364,25 @@ namespace Unity.Options
 #endif
         }
 
-        internal string[] Parse(IEnumerable<string> commandLine, Func<Type, string, object> customValueParser, string currentDirectory)
+        internal string[] Parse(IEnumerable<string> commandLine, Func<Type, string, object> customValueParser, string currentDirectory, object[] instances)
         {
-            var optionSet = PrepareOptionSet(customValueParser);
+            var optionSet = PrepareOptionSet(customValueParser, instances);
             return optionSet.Parse(commandLine, currentDirectory).ToArray();
         }
 
-        private OptionSet PrepareOptionSet(Func<Type, string, object> customValueParser)
+        private OptionSet PrepareOptionSet(Func<Type, string, object> customValueParser, object[] instances)
         {
             var optionSet = new OptionSet();
 
             foreach (var type in _types)
-                ExtendOptionSet(optionSet, type, customValueParser);
+                ExtendOptionSet(optionSet, type, customValueParser, instances);
 
             return optionSet;
         }
 
-        private void ExtendOptionSet(OptionSet optionSet, Type type, Func<Type, string, object> customValueParser)
+        private void ExtendOptionSet(OptionSet optionSet, Type type, Func<Type, string, object> customValueParser, object[] instances)
         {
-            var fields = GetOptionFields(type);
+            var fields = GetOptionFields(type, instances == null ? OptionFieldSelection.Static : OptionFieldSelection.Instance);
 
             foreach (var field in fields)
             {
@@ -360,7 +396,7 @@ namespace Unity.Options
                     optionSet.Add(
                         name,
                         DescriptionFor(field),
-                        ActionFor(options, field, customValueParser));
+                        ActionFor(options, field, customValueParser, instances));
                 }
             }
         }
@@ -391,7 +427,7 @@ namespace Unity.Options
 
         internal static string OptionNameFor(Type type, string fieldName, out Type fieldType)
         {
-            var field = GetOptionFields(type).FirstOrDefault(f => f.Name == fieldName);
+            var field = GetOptionFields(type, OptionFieldSelection.Any).FirstOrDefault(f => f.Name == fieldName);
             if (field == null)
                 throw new ArgumentException($"No field on type {type} named {fieldName}");
             fieldType = field.FieldType;
@@ -406,7 +442,7 @@ namespace Unity.Options
 
         public static string OptionNameFor(Type type, string fieldName)
         {
-            var field = GetOptionFields(type).FirstOrDefault(f => f.Name == fieldName);
+            var field = GetOptionFields(type, OptionFieldSelection.Any).FirstOrDefault(f => f.Name == fieldName);
             if (field == null)
                 throw new ArgumentException($"No field on type {type} named {fieldName}");
 
@@ -435,26 +471,30 @@ namespace Unity.Options
             return "";
         }
 
-        private static Action<string> ActionFor(ProgramOptionsAttribute options, FieldInfo field, Func<Type, string, object> customValueParser)
+        private static Action<string> ActionFor(ProgramOptionsAttribute options, FieldInfo field, Func<Type, string, object> customValueParser, object[] instances)
         {
             if (field.FieldType.IsArray && IsFlagsEnum(field.FieldType.GetElementType()))
                 throw new NotSupportedException("The parsing of a flags array is not supported.  There would be no way to know which values to combine together into each element in the array");
 
+            var instance = instances == null ? null : instances.FirstOrDefault(o => o.GetType() == field.DeclaringType);
+            if (instances != null && instance == null)
+                throw new ArgumentException($"No option instance found for field : {field}");
+
             if (field.FieldType.IsArray)
-                return v => SetArrayType(field, v, options, customValueParser);
+                return v => SetArrayType(field, v, options, customValueParser, instance);
 
             if (IsListField(field))
             {
-                return v => SetListType(field, v, options, customValueParser);
+                return v => SetListType(field, v, options, customValueParser, instance);
             }
 
             if (field.FieldType == typeof(bool))
-                return v => SetBoolType(field, v);
+                return v => SetBoolType(field, v, instance);
 
             if (IsFlagsEnum(field.FieldType))
-                return v => SetFlagsEnumType(field, v, options);
+                return v => SetFlagsEnumType(field, v, options, instance);
 
-            return v => SetBasicType(field, v, customValueParser);
+            return v => SetBasicType(field, v, customValueParser, instance);
         }
 
         private static bool IsListField(FieldInfo field)
@@ -473,23 +513,23 @@ namespace Unity.Options
             return false;
         }
 
-        private static void SetListType(FieldInfo field, string value, ProgramOptionsAttribute options, Func<Type, string, object> customValueParser)
+        private static void SetListType(FieldInfo field, string value, ProgramOptionsAttribute options, Func<Type, string, object> customValueParser, object instance)
         {
             var listType = field.FieldType;
-            var list = (IList)field.GetValue(null) ?? (IList)Activator.CreateInstance(listType);
+            var list = (IList)field.GetValue(instance) ?? (IList)Activator.CreateInstance(listType);
 
             foreach (var v in SplitCollectionValues(options, value))
                 list.Add(ParseValue(listType.GetGenericArguments()[0], v, customValueParser));
 
-            field.SetValue(null, list);
+            field.SetValue(instance, list);
         }
 
-        private static void SetArrayType(FieldInfo field, string value, ProgramOptionsAttribute options, Func<Type, string, object> customValueParser)
+        private static void SetArrayType(FieldInfo field, string value, ProgramOptionsAttribute options, Func<Type, string, object> customValueParser, object instance)
         {
             var index = 0;
             var values = SplitCollectionValues(options, value);
             var arrayType = field.FieldType;
-            var array = (Array)field.GetValue(null);
+            var array = (Array)field.GetValue(instance);
 
             if (array != null)
             {
@@ -504,26 +544,26 @@ namespace Unity.Options
             foreach (var v in values)
                 array.SetValue(ParseValue(arrayType.GetElementType(), v, customValueParser), index++);
 
-            field.SetValue(null, array);
+            field.SetValue(instance, array);
         }
 
-        private static void SetBoolType(FieldInfo field, string v)
+        private static void SetBoolType(FieldInfo field, string v, object instance)
         {
-            field.SetValue(null, true);
+            field.SetValue(instance, true);
         }
 
-        private static void SetBasicType(FieldInfo field, string v, Func<Type, string, object> customValueParser)
+        private static void SetBasicType(FieldInfo field, string v, Func<Type, string, object> customValueParser, object instance)
         {
-            field.SetValue(null, ParseValue(field.FieldType, v, customValueParser));
+            field.SetValue(instance, ParseValue(field.FieldType, v, customValueParser));
         }
 
-        private static void SetFlagsEnumType(FieldInfo field, string value, ProgramOptionsAttribute options)
+        private static void SetFlagsEnumType(FieldInfo field, string value, ProgramOptionsAttribute options, object instance)
         {
             int finalValue =
                 SplitCollectionValues(options, value)
                     .Select(v => (int)ParseEnumValue(field.FieldType, v))
                     .Aggregate(0, (accum, current) => accum | current);
-            field.SetValue(null, finalValue);
+            field.SetValue(instance, finalValue);
         }
 
         private static string[] SplitCollectionValues(ProgramOptionsAttribute options, string value)
@@ -576,6 +616,13 @@ namespace Unity.Options
                 throw new NotSupportedException("Unsupported type " + type.FullName);
 
             return converted;
+        }
+
+        enum OptionFieldSelection
+        {
+            Static,
+            Instance,
+            Any
         }
     }
 

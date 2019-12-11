@@ -218,6 +218,28 @@ namespace Unity.Options.Tests
     }
 
     [ProgramOptions]
+    public sealed class InstanceHelpOptions
+    {
+        internal const string OptionOneHelpText = "This is help information";
+        internal const string OptionTwoHelpText = "I hope it helps you";
+        internal const string CustomValueDescriptionHelpText = "Dont Care..normally";
+
+        [HelpDetails(OptionOneHelpText)]
+        public string OptionOne;
+
+        [HelpDetails(OptionTwoHelpText)]
+        public bool OptionTwo;
+
+        public string OptionMissingHelpDetails;
+
+        [HelpDetails(CustomValueDescriptionHelpText, "path")]
+        public string CustomValueDescription;
+
+        [HideFromHelp]
+        public bool OptionHidden;
+    }
+
+    [ProgramOptions]
     public sealed class HelpOptionsWithCollections
     {
         internal const string HelpText = "This is an array arg";
@@ -309,10 +331,68 @@ namespace Unity.Options.Tests
     }
 
     [ProgramOptions]
+    public sealed class InstanceRecreateOptions
+    {
+        public string StringValue1;
+
+        public string StringValue2;
+
+        public bool BoolValue1;
+
+        public bool BoolValue2;
+
+        public string[] CollectionValue1;
+
+        public string[] CollectionValue2;
+    }
+
+    [ProgramOptions]
     public sealed class RecreateOptions2
     {
         public static string StringValue1;
 
         public const string ShouldNotBeIncluded = "No!";
+    }
+
+    [ProgramOptions]
+    public sealed class InstanceOptions
+    {
+        public string StringValue;
+
+        public bool BoolValue;
+
+        public string[] ArrayValue;
+
+        public List<string> ListValue;
+
+        public Values EnumValue;
+
+        public FlagValues FlagEnumValue;
+    }
+
+    [ProgramOptions]
+    public sealed class InstanceOptionsWithStaticField
+    {
+        public string StringValue;
+
+        public static string StaticStringValue;
+    }
+
+    [ProgramOptions]
+    public sealed class InstanceMultiple1
+    {
+        public string Value1;
+    }
+
+    [ProgramOptions]
+    public sealed class InstanceMultiple2
+    {
+        public string Value2;
+    }
+
+    [ProgramOptions]
+    public sealed class InstanceMultiple3
+    {
+        public string Value3;
     }
 }
