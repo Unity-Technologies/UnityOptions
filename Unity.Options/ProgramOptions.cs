@@ -559,11 +559,32 @@ namespace Unity.Options
 
         private static void SetFlagsEnumType(FieldInfo field, string value, ProgramOptionsAttribute options, object instance)
         {
-            int finalValue =
-                SplitCollectionValues(options, value)
-                    .Select(v => (int)ParseEnumValue(field.FieldType, v))
-                    .Aggregate(0, (accum, current) => accum | current);
-            field.SetValue(instance, finalValue);
+            var under = Enum.GetUnderlyingType(field.FieldType);
+            if (under == typeof(Int32))
+                field.SetValue(instance, BuildFinalEnumValue(field, value, options, 0, (accum, current) => accum | current));
+            else if(under == typeof(UInt32))
+                field.SetValue(instance, BuildFinalEnumValue(field, value, options, (uint)0, (accum, current) => accum | current));
+            else if (under == typeof(Int64))
+                field.SetValue(instance, BuildFinalEnumValue(field, value, options, (long)0, (accum, current) => accum | current));
+            else if (under == typeof(UInt64))
+                field.SetValue(instance, BuildFinalEnumValue(field, value, options, (ulong)0, (accum, current) => accum | current));
+            else if (under == typeof(Int16))
+                field.SetValue(instance, BuildFinalEnumValue(field, value, options, (short)0, (accum, current) => (short)(accum | current)));
+            else if (under == typeof(UInt16))
+                field.SetValue(instance, BuildFinalEnumValue(field, value, options, (ushort)0, (accum, current) => (ushort)(accum | current)));
+            else if (under == typeof(Byte))
+                field.SetValue(instance, BuildFinalEnumValue(field, value, options, (byte)0, (accum, current) => (byte)(accum | current)));
+            else if (under == typeof(SByte))
+                field.SetValue(instance, BuildFinalEnumValue(field, value, options, (sbyte)0, (accum, current) => (sbyte)(accum | current)));
+            else
+                throw new ArgumentException($"Unhandled underlying enum type of : {under}");
+        }
+
+        private static T BuildFinalEnumValue<T>(FieldInfo field, string value, ProgramOptionsAttribute options, T zero, Func<T, T, T> combine)
+        {
+            return SplitCollectionValues(options, value)
+                .Select(v => (T)ParseEnumValue(field.FieldType, v))
+                .Aggregate(zero, combine);
         }
 
         private static string[] SplitCollectionValues(ProgramOptionsAttribute options, string value)
