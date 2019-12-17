@@ -182,6 +182,106 @@ namespace Unity.Options.Tests
     {
         public static FlagValues Flags;
     }
+    
+    [Flags]
+    public enum FlagValuesUInt : uint
+    {
+        One = 1,
+        Two = 2,
+        Three = 4,
+        Four = 8
+    }
+
+    [ProgramOptions]
+    public sealed class FlagsEnumUIntOptions
+    {
+        public static FlagValuesUInt Flags;
+    }
+    
+    [Flags]
+    public enum FlagValuesLong : long
+    {
+        One = 1 << 0,
+        Two = 1 << 1,
+        Three = 1 << 2,
+        Four = 1 << 3,
+        Five = 1 << 4,
+        Six = 1 << 5,
+        Seven = 1 << 6,
+        Eight = 1 << 7,
+        Nine = 1 << 8,
+        Ten = 1 << 9,
+        Eleven = 1 << 10
+    }
+    
+    [ProgramOptions]
+    public sealed class FlagsEnumULongOptions
+    {
+        public static FlagValuesULong Flags;
+    }
+    
+    [Flags]
+    public enum FlagValuesULong : ulong
+    {
+        One = 1 << 0,
+        Two = 1 << 1,
+        Three = 1 << 2,
+        Four = 1 << 3,
+        Five = 1 << 4,
+        Six = 1 << 5,
+        Seven = 1 << 6,
+        Eight = 1 << 7,
+        Nine = 1 << 8,
+        Ten = 1 << 9,
+        Eleven = 1 << 10
+    }
+    
+    [ProgramOptions]
+    public sealed class FlagsEnumLongOptions
+    {
+        public static FlagValuesLong Flags;
+    }
+    
+    [Flags]
+    public enum FlagValuesShort : short
+    {
+        One = 1 << 0,
+        Two = 1 << 1,
+        Three = 1 << 2,
+    }
+    
+    [ProgramOptions]
+    public sealed class FlagsEnumShortOptions
+    {
+        public static FlagValuesShort Flags;
+    }
+    
+    [Flags]
+    public enum FlagValuesByte : byte
+    {
+        One = 1 << 0,
+        Two = 1 << 1,
+        Three = 1 << 2,
+    }
+    
+    [ProgramOptions]
+    public sealed class FlagsEnumByteOptions
+    {
+        public static FlagValuesByte Flags;
+    }
+    
+    [Flags]
+    public enum FlagValuesSByte : sbyte
+    {
+        One = 1 << 0,
+        Two = 1 << 1,
+    }
+    
+    [ProgramOptions]
+    public sealed class FlagsEnumSByteOptions
+    {
+        public static FlagValuesSByte Flags;
+    }
 
     [ProgramOptions]
     public sealed class FlagsEnumArrayOptions

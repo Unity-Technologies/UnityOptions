@@ -74,6 +74,27 @@ namespace Unity.Options.Tests
             var result = OptionsFormatter.FormatWithValue<FlagsEnumOptions>(nameof(FlagsEnumOptions.Flags), FlagValues.One | FlagValues.Three);
             Assert.That(result, Is.EqualTo("--flags=One,Three"));
         }
+        
+        [Test]
+        public void FormatWithValueOfFlagsEnumLongLowValue()
+        {
+            var result = OptionsFormatter.FormatWithValue<FlagsEnumLongOptions>(nameof(FlagsEnumLongOptions.Flags), FlagValuesLong.One | FlagValuesLong.Three);
+            Assert.That(result, Is.EqualTo("--flags=One,Three"));
+        }
+        
+        [Test]
+        public void FormatWithValueOfFlagsEnumLongHighValue()
+        {
+            var result = OptionsFormatter.FormatWithValue<FlagsEnumLongOptions>(nameof(FlagsEnumLongOptions.Flags), FlagValuesLong.Nine | FlagValuesLong.Ten);
+            Assert.That(result, Is.EqualTo("--flags=Nine,Ten"));
+        }
+        
+        [Test]
+        public void FormatWithValueOfFlagsEnumLongHighSingle()
+        {
+            var result = OptionsFormatter.FormatWithValue<FlagsEnumLongOptions>(nameof(FlagsEnumLongOptions.Flags), FlagValuesLong.Ten);
+            Assert.That(result, Is.EqualTo("--flags=Ten"));
+        }
 
         [Test]
         public void FormatWithValueOfEnum()

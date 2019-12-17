@@ -497,6 +497,146 @@ namespace Unity.Options.Tests
 
             Assert.AreEqual(FlagValues.One | FlagValues.Three, FlagsEnumOptions.Flags);
         }
+        
+        [Test]
+        public void CanParseFlagsEnumUIntOptions()
+        {
+            var commandLine = new[]
+            {
+                "--flags=One,Three"
+            };
+            var types = new[] { typeof(FlagsEnumUIntOptions) };
+
+            OptionsParser.Prepare(commandLine, types);
+
+            Assert.AreEqual(FlagValuesUInt.One | FlagValuesUInt.Three, FlagsEnumUIntOptions.Flags);
+        }
+        
+        [Test]
+        public void CanParseFlagsEnumShortOptions()
+        {
+            var commandLine = new[]
+            {
+                "--flags=One,Three"
+            };
+            var types = new[] { typeof(FlagsEnumShortOptions) };
+
+            OptionsParser.Prepare(commandLine, types);
+
+            Assert.AreEqual(FlagValuesShort.One | FlagValuesShort.Three, FlagsEnumShortOptions.Flags);
+        }
+        
+        [Test]
+        public void CanParseFlagsEnumByteOptions()
+        {
+            var commandLine = new[]
+            {
+                "--flags=One,Three"
+            };
+            var types = new[] { typeof(FlagsEnumByteOptions) };
+
+            OptionsParser.Prepare(commandLine, types);
+
+            Assert.AreEqual(FlagValuesByte.One | FlagValuesByte.Three, FlagsEnumByteOptions.Flags);
+        }
+        
+        [Test]
+        public void CanParseFlagsEnumSByteOptions()
+        {
+            var commandLine = new[]
+            {
+                "--flags=One,Two"
+            };
+            var types = new[] { typeof(FlagsEnumSByteOptions) };
+
+            OptionsParser.Prepare(commandLine, types);
+
+            Assert.AreEqual(FlagValuesSByte.One | FlagValuesSByte.Two, FlagsEnumSByteOptions.Flags);
+        }
+        
+        [Test]
+        public void CanParseFlagsEnumOptionsLongLowValues()
+        {
+            var commandLine = new[]
+            {
+                "--flags=One,Three"
+            };
+            var types = new[] { typeof(FlagsEnumLongOptions) };
+
+            OptionsParser.Prepare(commandLine, types);
+
+            Assert.AreEqual(FlagValuesLong.One | FlagValuesLong.Three, FlagsEnumLongOptions.Flags);
+        }
+        
+        [Test]
+        public void CanParseFlagsEnumOptionsLongHighValues()
+        {
+            var commandLine = new[]
+            {
+                "--flags=Nine,Ten"
+            };
+            var types = new[] { typeof(FlagsEnumLongOptions) };
+
+            OptionsParser.Prepare(commandLine, types);
+
+            Assert.AreEqual(FlagValuesLong.Nine | FlagValuesLong.Ten, FlagsEnumLongOptions.Flags);
+        }
+        
+        [Test]
+        public void CanParseFlagsEnumOptionsLongSingleHighValue()
+        {
+            var commandLine = new[]
+            {
+                "--flags=Ten"
+            };
+            var types = new[] { typeof(FlagsEnumLongOptions) };
+
+            OptionsParser.Prepare(commandLine, types);
+
+            Assert.AreEqual(FlagValuesLong.Ten, FlagsEnumLongOptions.Flags);
+        }
+        
+        [Test]
+        public void CanParseFlagsEnumOptionsULongLowValues()
+        {
+            var commandLine = new[]
+            {
+                "--flags=One,Three"
+            };
+            var types = new[] { typeof(FlagsEnumULongOptions) };
+
+            OptionsParser.Prepare(commandLine, types);
+
+            Assert.AreEqual(FlagValuesULong.One | FlagValuesULong.Three, FlagsEnumULongOptions.Flags);
+        }
+        
+        [Test]
+        public void CanParseFlagsEnumOptionsULongHighValues()
+        {
+            var commandLine = new[]
+            {
+                "--flags=Nine,Ten"
+            };
+            var types = new[] { typeof(FlagsEnumULongOptions) };
+
+            OptionsParser.Prepare(commandLine, types);
+
+            Assert.AreEqual(FlagValuesULong.Nine | FlagValuesULong.Ten, FlagsEnumULongOptions.Flags);
+        }
+        
+        [Test]
+        public void CanParseFlagsEnumOptionsULongSingleHighValue()
+        {
+            var commandLine = new[]
+            {
+                "--flags=Ten"
+            };
+            var types = new[] { typeof(FlagsEnumULongOptions) };
+
+            OptionsParser.Prepare(commandLine, types);
+
+            Assert.AreEqual(FlagValuesULong.Ten, FlagsEnumULongOptions.Flags);
+        }
 
         [Test]
         public void FlagsEnumArrayAreNotSupported()
