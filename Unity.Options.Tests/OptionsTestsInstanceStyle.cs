@@ -167,5 +167,66 @@ namespace Unity.Options.Tests
                 }
             }
         }
+        
+        [Test]
+        public void TestDisplayHelpWithSimpleArgumentTypesInstanceModeAndCustomHelpTypes()
+        {
+            using (var tempFile = TempFile.CreateRandom())
+            {
+                using (var writer = new StreamWriter(tempFile.Path.ToString()))
+                {
+                    OptionsParser.DisplayHelp<CustomHelpDetailsAttribute, CustomHideFromHelpAttribute>(writer, new[] {new InstanceHelpOptionsWithCustomHelpAttributeTypes()}, attr => attr.Summary, attr => attr.CustomValueDescription);
+                }
+
+                using (var reader = new StreamReader(tempFile.Path.ToString()))
+                {
+                    Assert.AreEqual("", reader.ReadLine());
+                    Assert.AreEqual("Options:", reader.ReadLine());
+
+                    Assert.AreEqual(string.Format("{0}{1}", "  --option-one=<value>".PadRight(OptionsParser.HelpOutputColumnPadding), HelpOptions.OptionOneHelpText), reader.ReadLine());
+                    Assert.AreEqual(string.Format("{0}{1}", "  --option-two".PadRight(OptionsParser.HelpOutputColumnPadding), HelpOptions.OptionTwoHelpText), reader.ReadLine());
+                    Assert.AreEqual(string.Format("{0}{1}", "  --custom-value-description=<path>".PadRight(OptionsParser.HelpOutputColumnPadding), HelpOptions.CustomValueDescriptionHelpText), reader.ReadLine());
+                }
+            }
+        }
+
+        [Test]
+        public void CanParseOptionUsingItsCAliasCustom()
+        {
+            var commandLine = new[]
+            {
+                "--alias=hello"
+            };
+            var instance = new OptionsWithAliasesCustom();
+            OptionsParser.PrepareInstances<CustomOptionAliasAttribute>(commandLine, new[] {instance}, attr => attr.Name);
+
+            Assert.AreEqual("hello", instance.OptionWithAlias);
+        }
+
+        [Test]
+        public void CanParseOptionWithMultiAliasesUsingItsAliasCustom()
+        {
+            var commandLine = new[]
+            {
+                "--multi-alias4=hello"
+            };
+            var instance = new OptionsWithAliasesCustom();
+            OptionsParser.PrepareInstances<CustomOptionAliasAttribute>(commandLine, new[] {instance}, attr => attr.Name);
+
+            Assert.AreEqual("hello", instance.OptionWithMultipleAliases);
+        }
+
+        [Test]
+        public void CanParseBoolOptionUsingItsAliasCustom()
+        {
+            var commandLine = new[]
+            {
+                "--enable-alias"
+            };
+            var instance = new OptionsWithAliasesCustom();
+            OptionsParser.PrepareInstances<CustomOptionAliasAttribute>(commandLine, new[] {instance}, attr => attr.Name);
+
+            Assert.AreEqual(true, instance.BoolOptionWithAlias);
+        }
     }
 }

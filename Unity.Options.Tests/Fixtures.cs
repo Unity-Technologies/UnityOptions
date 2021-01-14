@@ -338,6 +338,50 @@ namespace Unity.Options.Tests
         [HideFromHelp]
         public bool OptionHidden;
     }
+    
+    [ProgramOptions]
+    public sealed class InstanceHelpOptionsWithCustomHelpAttributeTypes
+    {
+        internal const string OptionOneHelpText = "This is help information";
+        internal const string OptionTwoHelpText = "I hope it helps you";
+        internal const string CustomValueDescriptionHelpText = "Dont Care..normally";
+
+        [CustomHelpDetailsAttribute("Should be ignored")]
+        public static string AStaticsAreIgnored;
+
+        [CustomHelpDetailsAttribute(OptionOneHelpText)]
+        public string OptionOne;
+
+        [CustomHelpDetailsAttribute(OptionTwoHelpText)]
+        public bool OptionTwo;
+
+        public string OptionMissingHelpDetails;
+
+        [CustomHelpDetailsAttribute(CustomValueDescriptionHelpText, "path")]
+        public string CustomValueDescription;
+
+        [CustomHideFromHelpAttribute]
+        public bool OptionHidden;
+    }
+    
+    [AttributeUsage(AttributeTargets.Field)]
+    public class CustomHelpDetailsAttribute : Attribute
+    {
+        public string Summary { get; set; }
+
+        public string CustomValueDescription { get; set; }
+
+        public CustomHelpDetailsAttribute(string summary, string customValueDescription = null)
+        {
+            Summary = summary;
+            CustomValueDescription = customValueDescription;
+        }
+    }
+    
+    [AttributeUsage(AttributeTargets.Field)]
+    public class CustomHideFromHelpAttribute : Attribute
+    {
+    }
 
     [ProgramOptions]
     public sealed class HelpOptionsWithCollections
@@ -372,6 +416,32 @@ namespace Unity.Options.Tests
         [OptionAlias("multi-alias3")]
         [OptionAlias("multi-alias4")]
         public static string OptionWithMultipleAliases;
+    }
+    
+    public sealed class OptionsWithAliasesCustom
+    {
+        [CustomOptionAlias("alias")]
+        public string OptionWithAlias;
+
+        [CustomOptionAlias("enable-alias")]
+        public bool BoolOptionWithAlias;
+
+        [CustomOptionAlias("multi-alias1")]
+        [CustomOptionAlias("multi-alias2")]
+        [CustomOptionAlias("multi-alias3")]
+        [CustomOptionAlias("multi-alias4")]
+        public string OptionWithMultipleAliases;
+    }
+    
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
+    public class CustomOptionAliasAttribute : Attribute
+    {
+        public string Name { get; set; }
+
+        public CustomOptionAliasAttribute(string name)
+        {
+            Name = name;
+        }
     }
 
     [ProgramOptions]
@@ -454,7 +524,7 @@ namespace Unity.Options.Tests
         public const string ShouldNotBeIncluded = "No!";
     }
 
-    [ProgramOptions]
+    // Don't require program options
     public sealed class InstanceOptions
     {
         public string StringValue;

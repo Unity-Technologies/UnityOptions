@@ -9,12 +9,12 @@ namespace Unity.Options
     {
         public static string NameFor<T>(string fieldName)
         {
-            return OptionsParser.OptionNameFor(typeof(T), fieldName);
+            return OptionsParser.OptionNameFor<object>(typeof(T), fieldName, null);
         }
 
         public static string FormatWithValue<T>(string fieldName, object value)
         {
-            var name = OptionsParser.OptionNameFor(typeof(T), fieldName, out Type fieldType);
+            var name = OptionsParser.OptionNameFor<object>(typeof(T), fieldName, out Type fieldType, null);
             if (fieldType == typeof(bool))
             {
                 if (value is bool boolValue)

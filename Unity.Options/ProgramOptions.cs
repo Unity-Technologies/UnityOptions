@@ -76,20 +76,26 @@ namespace Unity.Options
 
         public static string[] PrepareInstances(string[] commandLine, object[] optionInstances, Func<Type, string, object> customValueParser = null, string currentDirectory = null)
         {
-            return Prepare(commandLine, optionInstances.Select(o => o.GetType()).ToArray(), customValueParser, currentDirectory, optionInstances);
+            return Prepare<OptionAliasAttribute>(commandLine, optionInstances.Select(o => o.GetType()).ToArray(), customValueParser, currentDirectory, optionInstances, attr => attr.Name);
+        }
+        
+        public static string[] PrepareInstances<TAliasAttribute>(string[] commandLine, object[] optionInstances, Func<TAliasAttribute, string> getAliasName, Func<Type, string, object> customValueParser = null, string currentDirectory = null)
+        {
+            return Prepare<TAliasAttribute>(commandLine, optionInstances.Select(o => o.GetType()).ToArray(), customValueParser, currentDirectory, optionInstances, getAliasName);
         }
 
         public static string[] Prepare(string[] commandLine, Type[] types, Func<Type, string, object> customValueParser = null, string currentDirectory = null)
         {
-            return Prepare(commandLine, types, customValueParser, currentDirectory, null);
+            return Prepare<OptionAliasAttribute>(commandLine, types, customValueParser, currentDirectory, null, attr => attr.Name);
         }
 
-        static string[] Prepare(string[] commandLine, Type[] types, Func<Type, string, object> customValueParser, string currentDirectory, object[] instances)
+        static string[] Prepare<TAliasAttribute>(string[] commandLine, Type[] types, Func<Type, string, object> customValueParser, string currentDirectory, object[] instances,
+            Func<TAliasAttribute, string> getAliasName)
         {
             var parser = new OptionsParser();
             foreach (var type in types)
                 parser.AddType(type);
-            return parser.Parse(commandLine, customValueParser, currentDirectory, instances);
+            return parser.Parse(commandLine, customValueParser, getAliasName, currentDirectory, instances);
         }
 
         public static string[] PrepareFromFile(string argFile, Type[] types, Func<Type, string, object> customValueParser = null)
@@ -117,13 +123,32 @@ namespace Unity.Options
 
         public static Dictionary<string, HelpInformation> ParseHelpTable(Type[] types)
         {
+            return ParseHelpTable<HelpDetailsAttribute, HideFromHelpAttribute>(types, attr => attr.Summary, attr => attr.CustomValueDescription);
+        }
+
+        public static Dictionary<string, HelpInformation> ParseHelpTable<THelpDetails, THideFromHelp>(Type[] types,
+            Func<THelpDetails, string> getSummary, Func<THelpDetails, string> getCustomValueDescription)
+        {
+            return ParseHelpTable<THelpDetails, THideFromHelp>(types, OptionFieldSelection.Any, getSummary, getCustomValueDescription);
+        }
+        
+        public static Dictionary<string, HelpInformation> ParseHelpTable<THelpDetails, THideFromHelp>(object[] optionInstances,
+            Func<THelpDetails, string> getSummary, Func<THelpDetails, string> getCustomValueDescription)
+        {
+            return ParseHelpTable<THelpDetails, THideFromHelp>(optionInstances.Select(o => o.GetType()).ToArray(), OptionFieldSelection.Instance, getSummary, getCustomValueDescription);
+        }
+
+        static Dictionary<string, HelpInformation> ParseHelpTable<THelpDetails, THideFromHelp>(Type[] types,
+            OptionFieldSelection optionFieldSelection,
+            Func<THelpDetails, string> getSummary, Func<THelpDetails, string> getCustomValueDescription)
+        {
             Dictionary<string, HelpInformation> helpTable = new Dictionary<string, HelpInformation>();
 
             foreach (var optionsTypes in types)
             {
-                foreach (var fieldInfo in GetOptionFields(optionsTypes, OptionFieldSelection.Any))
+                foreach (var fieldInfo in GetOptionFields(optionsTypes, optionFieldSelection))
                 {
-                    var helpAttrs = fieldInfo.GetCustomAttributes(typeof(HelpDetailsAttribute), false).ToArray();
+                    var helpAttrs = fieldInfo.GetCustomAttributes(typeof(THelpDetails), false).ToArray();
 
                     if (helpAttrs.Length > 1)
                         throw new InvalidOperationException(string.Format("Field, {0}, has more than one help attribute", fieldInfo.Name));
@@ -133,18 +158,18 @@ namespace Unity.Options
                     if (helpTable.ContainsKey(argName))
                         throw new InvalidOperationException(string.Format("There are multiple options defined with the name : {0}", argName));
 
-                    if (!fieldInfo.GetCustomAttributes(typeof(HideFromHelpAttribute), false).Any())
+                    if (!fieldInfo.GetCustomAttributes(typeof(THideFromHelp), false).Any())
                     {
                         if (helpAttrs.Length == 0)
                             helpTable.Add(argName, new HelpInformation {Summary = null, FieldInfo = fieldInfo });
                         else
                         {
-                            var helpAttr = ((HelpDetailsAttribute)helpAttrs[0]);
+                            var helpAttr = ((THelpDetails)helpAttrs[0]);
                             helpTable.Add(argName, new HelpInformation
                             {
-                                Summary = helpAttr.Summary,
+                                Summary = getSummary(helpAttr),
                                 FieldInfo = fieldInfo,
-                                CustomValueDescription = helpAttr.CustomValueDescription
+                                CustomValueDescription = getCustomValueDescription(helpAttr)
                             });
                         }
                     }
@@ -166,11 +191,25 @@ namespace Unity.Options
 
         public static void DisplayHelp(TextWriter writer, Type[] types)
         {
+            DisplayHelp<HelpDetailsAttribute, HideFromHelpAttribute>(writer, types, attr => attr.Summary, attr => attr.CustomValueDescription);
+        }
+
+        public static void DisplayHelp<THelpDetails, THideFromHelp>(TextWriter writer, object[] types, Func<THelpDetails, string> getSummary, Func<THelpDetails, string> getCustomValueDescription)
+        {
+            DisplayHelp(writer, ParseHelpTable<THelpDetails, THideFromHelp>(types, getSummary, getCustomValueDescription));
+        }
+
+        public static void DisplayHelp<THelpDetails, THideFromHelp>(TextWriter writer, Type[] types, Func<THelpDetails, string> getSummary, Func<THelpDetails, string> getCustomValueDescription)
+        {
+            DisplayHelp(writer, ParseHelpTable<THelpDetails, THideFromHelp>(types, getSummary, getCustomValueDescription));
+        }
+
+        public static void DisplayHelp(TextWriter writer,
+            Dictionary<string, HelpInformation> helpTable)
+        {
             writer.WriteLine();
             writer.WriteLine("Options:");
-
-            var helpTable = ParseHelpTable(types);
-
+            
             foreach (var entry in helpTable)
             {
                 if (!entry.Value.HasSummary)
@@ -207,6 +246,16 @@ namespace Unity.Options
         {
             DisplayHelp(Console.Out, optionTypes);
         }
+        
+        public static void DisplayHelp<THelpDetails, THideFromHelp>(object[] optionInstances, Func<THelpDetails, string> getSummary, Func<THelpDetails, string> getCustomValueDescription)
+        {
+            DisplayHelp<THelpDetails, THideFromHelp>(Console.Out, optionInstances, getSummary, getCustomValueDescription);
+        }
+
+        public static void DisplayHelp<THelpDetails, THideFromHelp>(Type[] types, Func<THelpDetails, string> getSummary, Func<THelpDetails, string> getCustomValueDescription)
+        {
+            DisplayHelp<THelpDetails, THideFromHelp>(Console.Out, types, getSummary, getCustomValueDescription);
+        }
 
         public static bool HelpRequested(string[] commandLine)
         {
@@ -237,7 +286,7 @@ namespace Unity.Options
                 if (predicate != null && !predicate(field, value))
                     continue;
 
-                var name = OptionNameFor(optionType, field.Name);
+                var name = OptionNameFor<object>(optionType, field.Name, null);
 
                 if (field.FieldType == typeof(bool))
                 {
@@ -364,34 +413,34 @@ namespace Unity.Options
 #endif
         }
 
-        internal string[] Parse(IEnumerable<string> commandLine, Func<Type, string, object> customValueParser, string currentDirectory, object[] instances)
+        internal string[] Parse<TAliasAttribute>(IEnumerable<string> commandLine, Func<Type, string, object> customValueParser, Func<TAliasAttribute, string> getAliasName, string currentDirectory, object[] instances)
         {
-            var optionSet = PrepareOptionSet(customValueParser, instances);
+            var optionSet = PrepareOptionSet(customValueParser, getAliasName, instances);
             return optionSet.Parse(commandLine, currentDirectory).ToArray();
         }
 
-        private OptionSet PrepareOptionSet(Func<Type, string, object> customValueParser, object[] instances)
+        private OptionSet PrepareOptionSet<TAliasAttribute>(Func<Type, string, object> customValueParser, Func<TAliasAttribute, string> getAliasName, object[] instances)
         {
             var optionSet = new OptionSet();
 
             foreach (var type in _types)
-                ExtendOptionSet(optionSet, type, customValueParser, instances);
+                ExtendOptionSet(optionSet, type, customValueParser, getAliasName, instances);
 
             return optionSet;
         }
 
-        private void ExtendOptionSet(OptionSet optionSet, Type type, Func<Type, string, object> customValueParser, object[] instances)
+        private void ExtendOptionSet<TAliasAttribute>(OptionSet optionSet, Type type, Func<Type, string, object> customValueParser, Func<TAliasAttribute, string> getAliasName, object[] instances)
         {
             var fields = GetOptionFields(type, instances == null ? OptionFieldSelection.Static : OptionFieldSelection.Instance);
 
             foreach (var field in fields)
             {
 #if NETCORE
-                var options = (ProgramOptionsAttribute)type.GetTypeInfo().GetCustomAttributes(typeof(ProgramOptionsAttribute), false).First();
+                var options = (ProgramOptionsAttribute)type.GetTypeInfo().GetCustomAttributes(typeof(ProgramOptionsAttribute), false).FirstOrDefault();
 #else
-                var options = (ProgramOptionsAttribute)type.GetCustomAttributes(typeof(ProgramOptionsAttribute), false).First();
+                var options = (ProgramOptionsAttribute)type.GetCustomAttributes(typeof(ProgramOptionsAttribute), false).FirstOrDefault();
 #endif
-                foreach (var name in OptionNamesFor(options, field))
+                foreach (var name in OptionNamesFor(options, field, getAliasName))
                 {
                     optionSet.Add(
                         name,
@@ -401,14 +450,14 @@ namespace Unity.Options
             }
         }
 
-        private static IEnumerable<string> OptionNamesFor(ProgramOptionsAttribute options, FieldInfo field)
+        private static IEnumerable<string> OptionNamesFor<TAliasAttribute>(ProgramOptionsAttribute options, FieldInfo field, Func<TAliasAttribute, string> getAliasName)
         {
             var name = NormalizeName(field.Name);
 
             if (field.FieldType != typeof(bool))
                 name += "=";
 
-            if (options.Group == null)
+            if (options?.Group == null)
             {
                 yield return name;
                 yield return NormalizeName(field.DeclaringType.Name) + "." + name;
@@ -416,16 +465,19 @@ namespace Unity.Options
             else
                 yield return options.Group + "." + name;
 
-            foreach (var aliasAttr in field.GetCustomAttributes(typeof(OptionAliasAttribute), false))
+            if (getAliasName != null)
             {
-                if (field.FieldType != typeof(bool))
-                    yield return $"{((OptionAliasAttribute)aliasAttr).Name}=";
-                else
-                    yield return ((OptionAliasAttribute)aliasAttr).Name;
+                foreach (var aliasAttr in field.GetCustomAttributes(typeof(TAliasAttribute), false))
+                {
+                    if (field.FieldType != typeof(bool))
+                        yield return $"{(getAliasName((TAliasAttribute) aliasAttr))}=";
+                    else
+                        yield return getAliasName((TAliasAttribute) aliasAttr);
+                }
             }
         }
 
-        internal static string OptionNameFor(Type type, string fieldName, out Type fieldType)
+        internal static string OptionNameFor<TAliasAttribute>(Type type, string fieldName, out Type fieldType, Func<TAliasAttribute, string> getAliasName)
         {
             var field = GetOptionFields(type, OptionFieldSelection.Any).FirstOrDefault(f => f.Name == fieldName);
             if (field == null)
@@ -433,25 +485,30 @@ namespace Unity.Options
             fieldType = field.FieldType;
 
 #if NETCORE
-            var options = (ProgramOptionsAttribute)type.GetTypeInfo().GetCustomAttributes(typeof(ProgramOptionsAttribute), false).First();
+            var options = (ProgramOptionsAttribute)type.GetTypeInfo().GetCustomAttributes(typeof(ProgramOptionsAttribute), false).FirstOrDefault();
 #else
-            var options = (ProgramOptionsAttribute)type.GetCustomAttributes(typeof(ProgramOptionsAttribute), false).First();
+            var options = (ProgramOptionsAttribute)type.GetCustomAttributes(typeof(ProgramOptionsAttribute), false).FirstOrDefault();
 #endif
-            return $"--{OptionNamesFor(options, field).First()}".TrimEnd('=');
+            return $"--{OptionNamesFor(options, field, getAliasName).First()}".TrimEnd('=');
         }
 
         public static string OptionNameFor(Type type, string fieldName)
+        {
+            return OptionNameFor<object>(type, fieldName, null);
+        }
+
+        public static string OptionNameFor<TAliasAttribute>(Type type, string fieldName, Func<TAliasAttribute, string> getAliasName)
         {
             var field = GetOptionFields(type, OptionFieldSelection.Any).FirstOrDefault(f => f.Name == fieldName);
             if (field == null)
                 throw new ArgumentException($"No field on type {type} named {fieldName}");
 
 #if NETCORE
-            var options = (ProgramOptionsAttribute)type.GetTypeInfo().GetCustomAttributes(typeof(ProgramOptionsAttribute), false).First();
+            var options = (ProgramOptionsAttribute)type.GetTypeInfo().GetCustomAttributes(typeof(ProgramOptionsAttribute), false).FirstOrDefault();
 #else
-            var options = (ProgramOptionsAttribute)type.GetCustomAttributes(typeof(ProgramOptionsAttribute), false).First();
+            var options = (ProgramOptionsAttribute)type.GetCustomAttributes(typeof(ProgramOptionsAttribute), false).FirstOrDefault();
 #endif
-            return $"--{OptionNamesFor(options, field).First()}".TrimEnd('=');
+            return $"--{OptionNamesFor(options, field, getAliasName).First()}".TrimEnd('=');
         }
 
         private static string NormalizeName(string name)
@@ -589,7 +646,7 @@ namespace Unity.Options
 
         private static string[] SplitCollectionValues(ProgramOptionsAttribute options, string value)
         {
-            return value.Split(new[] { options.CollectionSeparator ?? "," }, StringSplitOptions.None);
+            return value.Split(new[] { options?.CollectionSeparator ?? "," }, StringSplitOptions.None);
         }
 
         private static bool IsEnum(Type type)
