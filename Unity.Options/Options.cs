@@ -940,7 +940,7 @@ namespace NDesk.Options
                 {
                     // If the value contains a space and quotes, the quotes need to be preserved with escaping
                     if (o.Contains(" ") && o.Contains("\""))
-                        c.OptionValues.Add($"\"{o.Replace("\"", "\\\"")}\"");
+                        c.OptionValues.Add(o.Replace("\"", "\\\""));
                     else
                         c.OptionValues.Add(o.Trim('"'));
                 }
