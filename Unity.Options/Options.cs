@@ -938,11 +938,7 @@ namespace NDesk.Options
                          ? option.Split(c.Option.ValueSeparators, StringSplitOptions.None)
                          : new string[] {option})
                 {
-                    // If the value contains a space and quotes, the quotes need to be preserved with escaping
-                    if (o.Contains(" ") && o.Contains("\""))
-                        c.OptionValues.Add(o.Replace("\"", "\\\""));
-                    else
-                        c.OptionValues.Add(o.Trim('"'));
+                    c.OptionValues.Add(o.Trim('"'));
                 }
             if (c.OptionValues.Count == c.Option.MaxValueCount ||
                 c.Option.OptionValueType == OptionValueType.Optional)
