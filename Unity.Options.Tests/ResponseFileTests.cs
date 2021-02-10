@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using NUnit.Framework;
 
@@ -202,6 +203,24 @@ namespace Unity.Options.Tests
             }
         }
 
+        [Test]
+        [TestCase("--value=\"quotes_at_start_and_end\"", "quotes_at_start_and_end")]
+        [TestCase("--value=entree_\"quotes_from_middle_to_end\"", "entree_quotes_from_middle_to_end")]
+        [TestCase("--value=entree_\"quotes_from_middle_to_middle\"-postfix", "entree_quotes_from_middle_to_middle-postfix")]
+        
+        //you could argue this is not amazing behaviour, but at least this test documents current behaviour:
+        [TestCase("--value=\\\"quoted_string_at_start_and_end\\\"", "quoted_string_at_start_and_end")]
+        [TestCase("--value=entree_\\\"quoted_string_at_middle_to_end\\\"", "entree_quoted_string_at_start_and_end")]
+        public void ResponseFilesWithQuotes(string argument, string expectation)
+        {
+            using (var tempFile = TempFile.CreateRandom())
+            {
+                File.WriteAllLines(tempFile.Path, new[] {argument});
+                OptionsParser.Prepare(new[] {$"@{tempFile.Path}"}, new[] { typeof(StringOptions) });
+                Assert.AreEqual(expectation, StringOptions.Value);
+            }
+        }
+        
         static void VerifyResponseFileOptions()
         {
             Assert.AreEqual('1', BasicTypesOptions.CharValue);

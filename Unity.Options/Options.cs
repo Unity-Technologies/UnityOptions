@@ -129,6 +129,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Unity.Options;
@@ -938,7 +939,7 @@ namespace NDesk.Options
                          ? option.Split(c.Option.ValueSeparators, StringSplitOptions.None)
                          : new string[] {option})
                 {
-                    c.OptionValues.Add(o.Trim('"'));
+                    c.OptionValues.Add(TrimOutterQuotes(o));
                 }
             if (c.OptionValues.Count == c.Option.MaxValueCount ||
                 c.Option.OptionValueType == OptionValueType.Optional)
@@ -950,6 +951,15 @@ namespace NDesk.Options
                             c.OptionValues.Count, c.Option.MaxValueCount)),
                     c.OptionName);
             }
+        }
+
+        private static string TrimOutterQuotes(string o)
+        {
+            if (o.Length < 2)
+                return o;
+            if (o.First() == '"' && o.Last() == '"')
+                return o.Substring(1, o.Length - 2);
+            return o;
         }
 
         private bool ParseBool(string option, string n, OptionContext c)

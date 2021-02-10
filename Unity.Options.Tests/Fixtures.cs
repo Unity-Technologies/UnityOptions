@@ -10,6 +10,12 @@ namespace Unity.Options.Tests
     }
 
     [ProgramOptions]
+    public sealed class StringOptions
+    {
+        public static string Value;
+    }
+
+    [ProgramOptions]
     public sealed class SimpleOptionsUsingNonPublicFields
     {
         [Option]
