@@ -210,7 +210,7 @@ namespace Unity.Options.Tests
         
         //you could argue this is not amazing behaviour, but at least this test documents current behaviour:
         [TestCase("--value=\\\"quoted_string_at_start_and_end\\\"", "quoted_string_at_start_and_end")]
-        [TestCase("--value=entree_\\\"quoted_string_at_middle_to_end\\\"", "entree_quoted_string_at_start_and_end")]
+        [TestCase("--value=entree_\\\"quoted_string_at_middle_to_end\\\"", "entree_\"quoted_string_at_middle_to_end\"")]
         public void ResponseFilesWithQuotes(string argument, string expectation)
         {
             using (var tempFile = TempFile.CreateRandom())
