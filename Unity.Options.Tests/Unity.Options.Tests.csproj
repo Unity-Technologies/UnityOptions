@@ -1,30 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="$(SolutionDir)/GlobalProjectProps/Tests.props" />
+  <Import Project="$(SolutionDir)/GlobalProjectProps/TestsNET5.props" />
   <PropertyGroup>
     <ProjectGuid>{64149EC4-87B8-4E21-96BE-3691A72E9034}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <TargetFramework>net471</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <WarningLevel>4</WarningLevel>
+    <NoWarn>CS0649</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="nunit.framework">
-      <HintPath>$(SolutionDir)external/NUnit3/bin/net45/nunit.framework.dll</HintPath>
+      <HintPath>$(SolutionDir)external/NUnit3/bin/netcoreapp2.0/nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Unity.Options\Unity.Options.csproj">
-      <Project>{783F0782-FA64-49FB-9B89-8B4A56003A70}</Project>
-      <Name>Unity.Options</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\UnityEngine.Options.Tests.AnotherReference\UnityEngine.Options.Tests.AnotherReference.csproj">
-      <Project>{03B4007B-CB4E-483A-A359-07303C743591}</Project>
-      <Name>UnityEngine.Options.Tests.AnotherReference</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\UnityEngine.Options.Tests.ExternalReference\UnityEngine.Options.Tests.ExternalReference.csproj">
-      <Project>{0033F670-8F51-4918-8B88-9C473AF1B899}</Project>
-      <Name>UnityEngine.Options.Tests.ExternalReference</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\Unity.Options\Unity.Options.csproj" />
+    <ProjectReference Include="..\UnityEngine.Options.Tests.AnotherReference\UnityEngine.Options.Tests.AnotherReference.csproj" />
+    <ProjectReference Include="..\UnityEngine.Options.Tests.ExternalReference\UnityEngine.Options.Tests.ExternalReference.csproj" />
   </ItemGroup>
 </Project>

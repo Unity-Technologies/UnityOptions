@@ -1,0 +1,11 @@
+<Project>
+  <Import Project="All.props" />
+  <PropertyGroup>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.10.0-release-20210330-02" />
+    <!-- Rider doesn't like running the tests if we have this reference-->
+   <PackageReference Condition="'$(BuildingUnderTestpl)' == '1'" Include="NUnit3TestAdapter" Version="4.0.0-beta.2" />
+  </ItemGroup>
+</Project>
