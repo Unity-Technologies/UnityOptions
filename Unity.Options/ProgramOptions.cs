@@ -74,28 +74,31 @@ namespace Unity.Options
 
         public const int HelpOutputColumnPadding = 50;
 
-        public static string[] PrepareInstances(string[] commandLine, object[] optionInstances, Func<Type, string, object> customValueParser = null, string currentDirectory = null)
+        public static string[] PrepareInstances(string[] commandLine, object[] optionInstances, Func<Type, string, object> customValueParser = null,
+            Func<FieldInfo, string, string[]> customCollectionSplitter = null, string currentDirectory = null)
         {
-            return Prepare<OptionAliasAttribute>(commandLine, optionInstances.Select(o => o.GetType()).ToArray(), customValueParser, currentDirectory, optionInstances, attr => attr.Name);
+            return Prepare<OptionAliasAttribute>(commandLine, optionInstances.Select(o => o.GetType()).ToArray(), customValueParser, currentDirectory, optionInstances, attr => attr.Name, customCollectionSplitter);
         }
         
-        public static string[] PrepareInstances<TAliasAttribute>(string[] commandLine, object[] optionInstances, Func<TAliasAttribute, string> getAliasName, Func<Type, string, object> customValueParser = null, string currentDirectory = null)
+        public static string[] PrepareInstances<TAliasAttribute>(string[] commandLine, object[] optionInstances, Func<TAliasAttribute, string> getAliasName, Func<Type, string, object> customValueParser = null,
+            Func<FieldInfo, string, string[]> customCollectionSplitter = null, string currentDirectory = null)
         {
-            return Prepare<TAliasAttribute>(commandLine, optionInstances.Select(o => o.GetType()).ToArray(), customValueParser, currentDirectory, optionInstances, getAliasName);
+            return Prepare<TAliasAttribute>(commandLine, optionInstances.Select(o => o.GetType()).ToArray(), customValueParser, currentDirectory, optionInstances, getAliasName, customCollectionSplitter);
         }
 
-        public static string[] Prepare(string[] commandLine, Type[] types, Func<Type, string, object> customValueParser = null, string currentDirectory = null)
+        public static string[] Prepare(string[] commandLine, Type[] types, Func<Type, string, object> customValueParser = null,
+            Func<FieldInfo, string, string[]> customCollectionSplitter = null, string currentDirectory = null)
         {
-            return Prepare<OptionAliasAttribute>(commandLine, types, customValueParser, currentDirectory, null, attr => attr.Name);
+            return Prepare<OptionAliasAttribute>(commandLine, types, customValueParser, currentDirectory, null, attr => attr.Name, customCollectionSplitter);
         }
 
         static string[] Prepare<TAliasAttribute>(string[] commandLine, Type[] types, Func<Type, string, object> customValueParser, string currentDirectory, object[] instances,
-            Func<TAliasAttribute, string> getAliasName)
+            Func<TAliasAttribute, string> getAliasName, Func<FieldInfo, string, string[]> customCollectionSplitter)
         {
             var parser = new OptionsParser();
             foreach (var type in types)
                 parser.AddType(type);
-            return parser.Parse(commandLine, customValueParser, getAliasName, currentDirectory, instances);
+            return parser.Parse(commandLine, customValueParser, getAliasName, customCollectionSplitter, currentDirectory, instances);
         }
 
         public static string[] PrepareFromFile(string argFile, Type[] types, Func<Type, string, object> customValueParser = null)
@@ -413,23 +416,27 @@ namespace Unity.Options
 #endif
         }
 
-        internal string[] Parse<TAliasAttribute>(IEnumerable<string> commandLine, Func<Type, string, object> customValueParser, Func<TAliasAttribute, string> getAliasName, string currentDirectory, object[] instances)
+        internal string[] Parse<TAliasAttribute>(IEnumerable<string> commandLine, Func<Type, string, object> customValueParser, Func<TAliasAttribute, string> getAliasName,
+            Func<FieldInfo, string, string[]> customCollectionSplitter, string currentDirectory, object[] instances)
         {
-            var optionSet = PrepareOptionSet(customValueParser, getAliasName, instances);
+            var optionSet = PrepareOptionSet(customValueParser, getAliasName, customCollectionSplitter, instances);
             return optionSet.Parse(commandLine, currentDirectory).ToArray();
         }
 
-        private OptionSet PrepareOptionSet<TAliasAttribute>(Func<Type, string, object> customValueParser, Func<TAliasAttribute, string> getAliasName, object[] instances)
+        private OptionSet PrepareOptionSet<TAliasAttribute>(Func<Type, string, object> customValueParser, Func<TAliasAttribute, string> getAliasName,
+            Func<FieldInfo, string, string[]> customCollectionSplitter, object[] instances)
         {
             var optionSet = new OptionSet();
 
             foreach (var type in _types)
-                ExtendOptionSet(optionSet, type, customValueParser, getAliasName, instances);
+                ExtendOptionSet(optionSet, type, customValueParser, getAliasName, customCollectionSplitter, instances);
 
             return optionSet;
         }
 
-        private void ExtendOptionSet<TAliasAttribute>(OptionSet optionSet, Type type, Func<Type, string, object> customValueParser, Func<TAliasAttribute, string> getAliasName, object[] instances)
+        private void ExtendOptionSet<TAliasAttribute>(OptionSet optionSet, Type type, Func<Type, string, object> customValueParser, Func<TAliasAttribute, string> getAliasName,
+            Func<FieldInfo, string, string[]> customCollectionSplitter,
+            object[] instances)
         {
             var fields = GetOptionFields(type, instances == null ? OptionFieldSelection.Static : OptionFieldSelection.Instance);
 
@@ -445,7 +452,7 @@ namespace Unity.Options
                     optionSet.Add(
                         name,
                         DescriptionFor(field),
-                        ActionFor(options, field, customValueParser, instances));
+                        ActionFor(options, field, customValueParser, customCollectionSplitter, instances));
                 }
             }
         }
@@ -528,7 +535,9 @@ namespace Unity.Options
             return "";
         }
 
-        private static Action<string> ActionFor(ProgramOptionsAttribute options, FieldInfo field, Func<Type, string, object> customValueParser, object[] instances)
+        private static Action<string> ActionFor(ProgramOptionsAttribute options, FieldInfo field, Func<Type, string, object> customValueParser,
+            Func<FieldInfo, string, string[]> customCollectionSplitter,
+            object[] instances)
         {
             if (field.FieldType.IsArray && IsFlagsEnum(field.FieldType.GetElementType()))
                 throw new NotSupportedException("The parsing of a flags array is not supported.  There would be no way to know which values to combine together into each element in the array");
@@ -538,18 +547,18 @@ namespace Unity.Options
                 throw new ArgumentException($"No option instance found for field : {field}");
 
             if (field.FieldType.IsArray)
-                return v => SetArrayType(field, v, options, customValueParser, instance);
+                return v => SetArrayType(field, v, options, customValueParser, customCollectionSplitter, instance);
 
             if (IsListField(field))
             {
-                return v => SetListType(field, v, options, customValueParser, instance);
+                return v => SetListType(field, v, options, customValueParser, customCollectionSplitter, instance);
             }
 
             if (field.FieldType == typeof(bool))
                 return v => SetBoolType(field, v, instance);
 
             if (IsFlagsEnum(field.FieldType))
-                return v => SetFlagsEnumType(field, v, options, instance);
+                return v => SetFlagsEnumType(field, customCollectionSplitter, v, options, instance);
 
             return v => SetBasicType(field, v, customValueParser, instance);
         }
@@ -570,21 +579,22 @@ namespace Unity.Options
             return false;
         }
 
-        private static void SetListType(FieldInfo field, string value, ProgramOptionsAttribute options, Func<Type, string, object> customValueParser, object instance)
+        private static void SetListType(FieldInfo field, string value, ProgramOptionsAttribute options, Func<Type, string, object> customValueParser, Func<FieldInfo, string, string[]> customCollectionSplitter, object instance)
         {
             var listType = field.FieldType;
             var list = (IList)field.GetValue(instance) ?? (IList)Activator.CreateInstance(listType);
 
-            foreach (var v in SplitCollectionValues(options, value))
+            foreach (var v in SplitCollectionValues(field, customCollectionSplitter, options, value))
                 list.Add(ParseValue(listType.GetGenericArguments()[0], v, customValueParser));
 
             field.SetValue(instance, list);
         }
 
-        private static void SetArrayType(FieldInfo field, string value, ProgramOptionsAttribute options, Func<Type, string, object> customValueParser, object instance)
+        private static void SetArrayType(FieldInfo field, string value, ProgramOptionsAttribute options, Func<Type, string, object> customValueParser,
+            Func<FieldInfo, string, string[]> customCollectionSplitter, object instance)
         {
             var index = 0;
-            var values = SplitCollectionValues(options, value);
+            var values = SplitCollectionValues(field, customCollectionSplitter, options, value);
             var arrayType = field.FieldType;
             var array = (Array)field.GetValue(instance);
 
@@ -614,38 +624,45 @@ namespace Unity.Options
             field.SetValue(instance, ParseValue(field.FieldType, v, customValueParser));
         }
 
-        private static void SetFlagsEnumType(FieldInfo field, string value, ProgramOptionsAttribute options, object instance)
+        private static void SetFlagsEnumType(FieldInfo field, Func<FieldInfo, string, string[]> customCollectionSplitter, string value, ProgramOptionsAttribute options, object instance)
         {
             var under = Enum.GetUnderlyingType(field.FieldType);
             if (under == typeof(Int32))
-                field.SetValue(instance, BuildFinalEnumValue(field, value, options, 0, (accum, current) => accum | current));
+                field.SetValue(instance, BuildFinalEnumValue(field, customCollectionSplitter,  value, options, 0, (accum, current) => accum | current));
             else if(under == typeof(UInt32))
-                field.SetValue(instance, BuildFinalEnumValue(field, value, options, (uint)0, (accum, current) => accum | current));
+                field.SetValue(instance, BuildFinalEnumValue(field, customCollectionSplitter, value, options, (uint)0, (accum, current) => accum | current));
             else if (under == typeof(Int64))
-                field.SetValue(instance, BuildFinalEnumValue(field, value, options, (long)0, (accum, current) => accum | current));
+                field.SetValue(instance, BuildFinalEnumValue(field, customCollectionSplitter, value, options, (long)0, (accum, current) => accum | current));
             else if (under == typeof(UInt64))
-                field.SetValue(instance, BuildFinalEnumValue(field, value, options, (ulong)0, (accum, current) => accum | current));
+                field.SetValue(instance, BuildFinalEnumValue(field, customCollectionSplitter, value, options, (ulong)0, (accum, current) => accum | current));
             else if (under == typeof(Int16))
-                field.SetValue(instance, BuildFinalEnumValue(field, value, options, (short)0, (accum, current) => (short)(accum | current)));
+                field.SetValue(instance, BuildFinalEnumValue(field, customCollectionSplitter, value, options, (short)0, (accum, current) => (short)(accum | current)));
             else if (under == typeof(UInt16))
-                field.SetValue(instance, BuildFinalEnumValue(field, value, options, (ushort)0, (accum, current) => (ushort)(accum | current)));
+                field.SetValue(instance, BuildFinalEnumValue(field, customCollectionSplitter, value, options, (ushort)0, (accum, current) => (ushort)(accum | current)));
             else if (under == typeof(Byte))
-                field.SetValue(instance, BuildFinalEnumValue(field, value, options, (byte)0, (accum, current) => (byte)(accum | current)));
+                field.SetValue(instance, BuildFinalEnumValue(field, customCollectionSplitter, value, options, (byte)0, (accum, current) => (byte)(accum | current)));
             else if (under == typeof(SByte))
-                field.SetValue(instance, BuildFinalEnumValue(field, value, options, (sbyte)0, (accum, current) => (sbyte)(accum | current)));
+                field.SetValue(instance, BuildFinalEnumValue(field, customCollectionSplitter, value, options, (sbyte)0, (accum, current) => (sbyte)(accum | current)));
             else
                 throw new ArgumentException($"Unhandled underlying enum type of : {under}");
         }
 
-        private static T BuildFinalEnumValue<T>(FieldInfo field, string value, ProgramOptionsAttribute options, T zero, Func<T, T, T> combine)
+        private static T BuildFinalEnumValue<T>(FieldInfo field, Func<FieldInfo, string, string[]> customCollectionSplitter, string value, ProgramOptionsAttribute options, T zero, Func<T, T, T> combine)
         {
-            return SplitCollectionValues(options, value)
+            return SplitCollectionValues(field, customCollectionSplitter, options, value)
                 .Select(v => (T)ParseEnumValue(field.FieldType, v))
                 .Aggregate(zero, combine);
         }
 
-        private static string[] SplitCollectionValues(ProgramOptionsAttribute options, string value)
+        private static string[] SplitCollectionValues(FieldInfo field, Func<FieldInfo, string, string[]> customCollectionSplitter, ProgramOptionsAttribute options, string value)
         {
+            string[] result = null;
+            if (customCollectionSplitter != null)
+                result = customCollectionSplitter(field, value);
+
+            if (result != null)
+                return result;
+
             return value.Split(new[] { options?.CollectionSeparator ?? "," }, StringSplitOptions.None);
         }
 
