@@ -1,5 +1,7 @@
 using System;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using NUnit.Framework;
 
 namespace Unity.Options.Tests
@@ -66,6 +68,27 @@ namespace Unity.Options.Tests
 
             Assert.That(instance.ArrayValue, Is.Not.Null);
             Assert.That(instance.ArrayValue, Is.EquivalentTo(new[] {"foo", "bar"}));
+        }
+        
+        [Test]
+        public void CanParseArrayOptionWithCustomCollectionValueParser()
+        {
+            var commandLine = new[] { "--array-value=foo,bar" };
+
+            var instance = new InstanceOptions();
+
+            OptionsParser.PrepareInstances(commandLine,  new[] {instance}, customCollectionSplitter: CustomCollectionSplitter);
+
+            Assert.That(instance.ArrayValue, Is.Not.Null);
+            Assert.That(instance.ArrayValue, Is.EquivalentTo(new[]
+            {
+                "f", "o", "o", ",", "b", "a", "r"
+            }));
+        }
+
+        private string[] CustomCollectionSplitter(FieldInfo field, string value)
+        {
+            return value.ToCharArray().Select(v => $"{v}").ToArray();
         }
 
         [Test]
