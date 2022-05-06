@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using NDesk.Options;
 using System.Globalization;
+using System.Text;
 
 namespace Unity.Options
 {
@@ -70,8 +71,6 @@ namespace Unity.Options
 
     public sealed class OptionsParser
     {
-        private static readonly Regex NameBuilder = new Regex(@"([A-Z][a-z_0-9]*)");
-
         public const int HelpOutputColumnPadding = 50;
 
         public static string[] PrepareInstances(string[] commandLine, object[] optionInstances, Func<Type, string, object> customValueParser = null,
@@ -518,16 +517,17 @@ namespace Unity.Options
             return $"--{OptionNamesFor(options, field, getAliasName).First()}".TrimEnd('=');
         }
 
-        private static string NormalizeName(string name)
+        static string NormalizeName(string memberName)
         {
-            return NameBuilder.Matches(name)
-                .Cast<Match>()
-#if NETCORE
-                .Select(m => m.Value.ToLowerInvariant())
-#else
-                .Select(m => m.Value.ToLower(CultureInfo.InvariantCulture))
-#endif
-                .Aggregate((buff, s) => buff + "-" + s);
+            var sb = new StringBuilder(memberName.Length);
+            foreach (char c in memberName)
+            {
+                if (char.IsUpper(c) && sb.Length != 0)
+                    sb.Append("-");
+                sb.Append(char.ToLowerInvariant(c));
+            }
+
+            return sb.ToString();
         }
 
         private static string DescriptionFor(FieldInfo field)

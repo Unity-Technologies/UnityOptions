@@ -108,7 +108,8 @@ namespace Unity.Options.Tests
                 "--double-value=11.33",
                 "--bool-value",
                 "--string-value-with-spaces=gabriele farina",
-                "--string-value-no-spaces=gabrielefarina"
+                "--string-value-no-spaces=gabrielefarina",
+                "--string-value-with-path=C:\\My\\Path"
             };
             var types = new[] { typeof(BasicTypesOptions) };
 
@@ -128,6 +129,49 @@ namespace Unity.Options.Tests
             Assert.AreEqual(true, BasicTypesOptions.BoolValue);
             Assert.AreEqual("gabriele farina", BasicTypesOptions.StringValueWithSpaces);
             Assert.AreEqual("gabrielefarina", BasicTypesOptions.StringValueNoSpaces);
+            Assert.AreEqual("C:\\My\\Path", BasicTypesOptions.StringValueWithPath);
+        }
+        
+        [Test]
+        public void CanParseBasicOptionTypesWithSlashPrefix()
+        {
+            var commandLine = new[]
+            {
+                "/char-value=1",
+                "/byte-value=2",
+                "/s-byte-value=3",
+                "/short-value=4",
+                "/u-short-value=5",
+                "/int-value=6",
+                "/u-int-value=7",
+                "/long-value=8",
+                "/u-long-value=9",
+                "/float-value=10.42",
+                "/double-value=11.33",
+                "/bool-value",
+                "/string-value-with-spaces=gabriele farina",
+                "/string-value-no-spaces=gabrielefarina",
+                "/string-value-with-path=C:\\My\\Path"
+            };
+            var types = new[] { typeof(BasicTypesOptions) };
+
+            OptionsParser.Prepare(commandLine, types);
+
+            Assert.AreEqual('1', BasicTypesOptions.CharValue);
+            Assert.AreEqual(2, BasicTypesOptions.ByteValue);
+            Assert.AreEqual(3, BasicTypesOptions.SByteValue);
+            Assert.AreEqual(4, BasicTypesOptions.ShortValue);
+            Assert.AreEqual(5, BasicTypesOptions.UShortValue);
+            Assert.AreEqual(6, BasicTypesOptions.IntValue);
+            Assert.AreEqual(7, BasicTypesOptions.UIntValue);
+            Assert.AreEqual(8, BasicTypesOptions.LongValue);
+            Assert.AreEqual(9, BasicTypesOptions.ULongValue);
+            Assert.AreEqual(10.42f, BasicTypesOptions.FloatValue);
+            Assert.AreEqual(11.33, BasicTypesOptions.DoubleValue);
+            Assert.AreEqual(true, BasicTypesOptions.BoolValue);
+            Assert.AreEqual("gabriele farina", BasicTypesOptions.StringValueWithSpaces);
+            Assert.AreEqual("gabrielefarina", BasicTypesOptions.StringValueNoSpaces);
+            Assert.AreEqual("C:\\My\\Path", BasicTypesOptions.StringValueWithPath);
         }
 
         [Test]

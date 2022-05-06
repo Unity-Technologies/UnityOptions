@@ -131,7 +131,6 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using Unity.Options;
 
 #if LINQ
@@ -868,27 +867,61 @@ namespace NDesk.Options
             return false;
         }
 
-        private readonly Regex ValueOption = new Regex(
-                @"^(?<flag>--|-|/)(?<name>[^:=]+)((?<sep>[:=])(?<value>.*))?$");
-
         protected bool GetOptionParts(string argument, out string flag, out string name, out string sep, out string value)
         {
             if (argument == null)
                 throw new ArgumentNullException("argument");
-
-            flag = name = sep = value = null;
-            Match m = ValueOption.Match(argument);
-            if (!m.Success)
-            {
+            
+            flag = null;
+            name = null;
+            sep = null;
+            value = null;
+            
+            if (argument.Length < 2)
                 return false;
-            }
-            flag  = m.Groups["flag"].Value;
-            name  = m.Groups["name"].Value;
-            if (m.Groups["sep"].Success && m.Groups["value"].Success)
+            
+            var startAt = 0;
+            if (argument[0] == '-')
             {
-                sep   = m.Groups["sep"].Value;
-                value = m.Groups["value"].Value;
+                startAt++;
+                flag = "-";
+                
+                if (argument[1] == '-')
+                {
+                    startAt++;
+                    flag = "--";
+                }
             }
+            else if (argument[0] == '/')
+            {
+                startAt++;
+                flag = "/";
+            }
+            else
+                return false;
+
+            var sb = new StringBuilder();
+
+            for(int i = startAt; i < argument.Length; i++)
+            {
+                var c = argument[i];
+                if ((c == ':' || c == '=') && sep == null)
+                {
+                    sep = c.ToString();
+                    name = sb.ToString();
+                    sb.Clear();
+                }
+                else
+                {
+                    sb.Append(c);
+                }
+            }
+
+            // Bool values can show up as '--bool-value' where there is no sep, in that case the string builder will contain the name instead of the value
+            if (sep == null)
+                name = sb.ToString();
+            else
+                value = sb.ToString();
             return true;
         }
 

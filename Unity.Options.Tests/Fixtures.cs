@@ -64,6 +64,7 @@ namespace Unity.Options.Tests
         public static bool BoolValue;
         public static string StringValueNoSpaces;
         public static string StringValueWithSpaces;
+        public static string StringValueWithPath;
 
         public static void SetupDefaults()
         {
@@ -81,6 +82,7 @@ namespace Unity.Options.Tests
             BoolValue = false;
             StringValueNoSpaces = string.Empty;
             StringValueWithSpaces = string.Empty;
+            StringValueWithPath = string.Empty;
         }
     }
 
