@@ -2,6 +2,5 @@
   <Import Project="All.props" />
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <OutputPath>$(SolutionDir)build/</OutputPath>
   </PropertyGroup>
 </Project>

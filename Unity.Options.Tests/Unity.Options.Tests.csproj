@@ -8,9 +8,7 @@
     <NoWarn>CS0649</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="nunit.framework">
-      <HintPath>$(SolutionDir)external/NUnit3/bin/netcoreapp2.0/nunit.framework.dll</HintPath>
-    </Reference>
+    <PackageReference Include="NUnit" Version="3.13.3" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Unity.Options\Unity.Options.csproj" />
