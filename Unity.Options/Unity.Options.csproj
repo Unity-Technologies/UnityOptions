@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="$(SolutionDir)/GlobalProjectProps/Libraries.props" />
   <PropertyGroup>
     <ProjectGuid>{783F0782-FA64-49FB-9B89-8B4A56003A70}</ProjectGuid>
     <TargetFramework>netstandard2.0</TargetFramework>

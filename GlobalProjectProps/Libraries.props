@@ -1,6 +1,0 @@
-<Project>
-  <Import Project="All.props" />
-  <PropertyGroup>
-    <OutputType>Library</OutputType>
-  </PropertyGroup>
-</Project>
