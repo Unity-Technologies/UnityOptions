@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="$(SolutionDir)/GlobalProjectProps/TestsNET5.props" />
   <PropertyGroup>
     <ProjectGuid>{64149EC4-87B8-4E21-96BE-3691A72E9034}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -9,6 +8,8 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="NUnit" Version="3.13.3" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.2.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Unity.Options\Unity.Options.csproj" />

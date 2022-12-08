@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="$(SolutionDir)/GlobalProjectProps/Tests.props" />
   <PropertyGroup>
     <ProjectGuid>{0033F670-8F51-4918-8B88-9C473AF1B899}</ProjectGuid>
     <OutputType>Library</OutputType>
