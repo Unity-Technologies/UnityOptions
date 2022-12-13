@@ -2,14 +2,14 @@
   <PropertyGroup>
     <ProjectGuid>{64149EC4-87B8-4E21-96BE-3691A72E9034}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <WarningLevel>4</WarningLevel>
     <NoWarn>CS0649</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="NUnit" Version="3.13.3" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.2.0" />
-    <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.3.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Unity.Options\Unity.Options.csproj" />
