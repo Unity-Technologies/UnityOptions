@@ -309,6 +309,9 @@ namespace Unity.Options
             return args.ToArray();
         }
 
+#if NET6_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("ILLinker", "IL2070", Justification = "Trust that calling assembly handled this")]
+#endif
         private static IEnumerable<FieldInfo> GetOptionFields(Type optionType, OptionFieldSelection selection)
         {
             BindingFlags bindingFlagForMode = BindingFlagsForSelection(selection);
@@ -336,6 +339,9 @@ namespace Unity.Options
             }
         }
 
+#if NET6_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("ILLinker", "IL2026", Justification = "Trust that calling assembly uses all needed types")]
+#endif
         public static Type[] LoadOptionTypesFromAssembly(Assembly assembly, bool includeReferencedAssemblies,
             Func<AssemblyName, bool> shouldProcessReference = null,
             Func<Assembly, Type[]> customTypeCollector = null)
@@ -579,6 +585,9 @@ namespace Unity.Options
             return false;
         }
 
+#if NET6_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("ILLinker", "IL2072", Justification = "Trust that calling assembly handled this")]
+#endif
         private static void SetListType(FieldInfo field, string value, ProgramOptionsAttribute options, Func<Type, string, object> customValueParser, Func<FieldInfo, string, string[]> customCollectionSplitter, object instance)
         {
             var listType = field.FieldType;
@@ -590,6 +599,9 @@ namespace Unity.Options
             field.SetValue(instance, list);
         }
 
+#if NET6_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("ILLinker", "IL2072", Justification = "Trust that calling assembly handled this")]
+#endif
         private static void SetArrayType(FieldInfo field, string value, ProgramOptionsAttribute options, Func<Type, string, object> customValueParser,
             Func<FieldInfo, string, string[]> customCollectionSplitter, object instance)
         {

@@ -350,6 +350,10 @@ namespace NDesk.Options
             return (string[])separators.Clone();
         }
 
+#if NET6_0_OR_GREATER
+        [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("ILLinker", "IL2026", Justification = "Trust that calling assembly handled this")]
+        [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("ILLinker", "IL2087", Justification = "Trust that calling assembly handled this")]
+#endif
         protected static T Parse<T>(string value, OptionContext c)
         {
             TypeConverter conv = TypeDescriptor.GetConverter(typeof(T));
