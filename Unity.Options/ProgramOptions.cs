@@ -702,7 +702,7 @@ namespace Unity.Options
 
         private static object ParseEnumValue(Type type, string value)
         {
-            return Enum.GetValues(type).Cast<object>().First(v => String.Equals(Enum.GetName(type, v), value, StringComparison.OrdinalIgnoreCase));
+            return Enum.Parse(type, value, true);
         }
 
         private static object ParseValue(Type type, string value, Func<Type, string, object> customValueParser)
