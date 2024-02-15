@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <ProjectGuid>{783F0782-FA64-49FB-9B89-8B4A56003A70}</ProjectGuid>
-    <TargetFrameworks>netstandard2.0;net7</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net8.0</TargetFrameworks>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningLevel>4</WarningLevel>
     <IsTrimmable>true</IsTrimmable>
