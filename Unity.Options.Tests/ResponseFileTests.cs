@@ -26,7 +26,7 @@ namespace Unity.Options.Tests
 
                 OptionsParser.Prepare(commandLine, types);
 
-                Assert.AreEqual(10, SimpleOptions.Value);
+                Assert.That(SimpleOptions.Value, Is.EqualTo(10));
             }
         }
 
@@ -49,7 +49,7 @@ namespace Unity.Options.Tests
 
                 OptionsParser.Prepare(commandLine, types, currentDirectory: Path.GetDirectoryName(tempFile.Path));
 
-                Assert.AreEqual(10, SimpleOptions.Value);
+                Assert.That(SimpleOptions.Value, Is.EqualTo(10));
             }
         }
 
@@ -217,26 +217,26 @@ namespace Unity.Options.Tests
             {
                 File.WriteAllLines(tempFile.Path, new[] {argument});
                 OptionsParser.Prepare(new[] {$"@{tempFile.Path}"}, new[] { typeof(StringOptions) });
-                Assert.AreEqual(expectation, StringOptions.Value);
+                Assert.That(StringOptions.Value, Is.EqualTo(expectation));
             }
         }
         
         static void VerifyResponseFileOptions()
         {
-            Assert.AreEqual('1', BasicTypesOptions.CharValue);
-            Assert.AreEqual(2, BasicTypesOptions.ByteValue);
-            Assert.AreEqual(3, BasicTypesOptions.SByteValue);
-            Assert.AreEqual(4, BasicTypesOptions.ShortValue);
-            Assert.AreEqual(5, BasicTypesOptions.UShortValue);
-            Assert.AreEqual(6, BasicTypesOptions.IntValue);
-            Assert.AreEqual(7, BasicTypesOptions.UIntValue);
-            Assert.AreEqual(8, BasicTypesOptions.LongValue);
-            Assert.AreEqual(9, BasicTypesOptions.ULongValue);
-            Assert.AreEqual(10.42f, BasicTypesOptions.FloatValue);
-            Assert.AreEqual(11.33, BasicTypesOptions.DoubleValue);
-            Assert.AreEqual(true, BasicTypesOptions.BoolValue);
-            Assert.AreEqual("value with spaces", BasicTypesOptions.StringValueWithSpaces);
-            Assert.AreEqual("valuewithoutspaces", BasicTypesOptions.StringValueNoSpaces);
+            Assert.That(BasicTypesOptions.CharValue, Is.EqualTo('1'));
+            Assert.That(BasicTypesOptions.ByteValue, Is.EqualTo(2));
+            Assert.That(BasicTypesOptions.SByteValue, Is.EqualTo(3));
+            Assert.That(BasicTypesOptions.ShortValue, Is.EqualTo(4));
+            Assert.That(BasicTypesOptions.UShortValue, Is.EqualTo(5));
+            Assert.That(BasicTypesOptions.IntValue, Is.EqualTo(6));
+            Assert.That(BasicTypesOptions.UIntValue, Is.EqualTo(7));
+            Assert.That(BasicTypesOptions.LongValue, Is.EqualTo(8));
+            Assert.That(BasicTypesOptions.ULongValue, Is.EqualTo(9));
+            Assert.That(BasicTypesOptions.FloatValue, Is.EqualTo(10.42f));
+            Assert.That(BasicTypesOptions.DoubleValue, Is.EqualTo(11.33));
+            Assert.That(BasicTypesOptions.BoolValue, Is.EqualTo(true));
+            Assert.That(BasicTypesOptions.StringValueWithSpaces, Is.EqualTo("value with spaces"));
+            Assert.That(BasicTypesOptions.StringValueNoSpaces, Is.EqualTo("valuewithoutspaces"));
         }
     }
 }

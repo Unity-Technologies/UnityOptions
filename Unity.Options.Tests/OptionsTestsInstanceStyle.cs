@@ -18,7 +18,7 @@ namespace Unity.Options.Tests
 
             OptionsParser.PrepareInstances(commandLine, new[] {instance});
 
-            Assert.AreEqual(true, instance.BoolValue);
+            Assert.That(instance.BoolValue, Is.EqualTo(true));
         }
 
         [Test]
@@ -30,7 +30,7 @@ namespace Unity.Options.Tests
 
             OptionsParser.PrepareInstances(commandLine, new[] {instance});
 
-            Assert.AreEqual("foo", instance.StringValue);
+            Assert.That(instance.StringValue, Is.EqualTo("foo"));
         }
 
         [Test]
@@ -42,7 +42,7 @@ namespace Unity.Options.Tests
 
             OptionsParser.PrepareInstances(commandLine, new[] {instance});
 
-            Assert.AreEqual(Values.Second, instance.EnumValue);
+            Assert.That(instance.EnumValue, Is.EqualTo(Values.Second));
         }
 
         [Test]
@@ -181,12 +181,12 @@ namespace Unity.Options.Tests
 
                 using (var reader = new StreamReader(tempFile.Path.ToString()))
                 {
-                    Assert.AreEqual("", reader.ReadLine());
-                    Assert.AreEqual("Options:", reader.ReadLine());
+                    Assert.That(reader.ReadLine(), Is.EqualTo(""));
+                    Assert.That(reader.ReadLine(), Is.EqualTo("Options:"));
 
-                    Assert.AreEqual(string.Format("{0}{1}", "  --option-one=<value>".PadRight(OptionsParser.HelpOutputColumnPadding), HelpOptions.OptionOneHelpText), reader.ReadLine());
-                    Assert.AreEqual(string.Format("{0}{1}", "  --option-two".PadRight(OptionsParser.HelpOutputColumnPadding), HelpOptions.OptionTwoHelpText), reader.ReadLine());
-                    Assert.AreEqual(string.Format("{0}{1}", "  --custom-value-description=<path>".PadRight(OptionsParser.HelpOutputColumnPadding), HelpOptions.CustomValueDescriptionHelpText), reader.ReadLine());
+                    Assert.That(reader.ReadLine(), Is.EqualTo(string.Format("{0}{1}", "  --option-one=<value>".PadRight(OptionsParser.HelpOutputColumnPadding), HelpOptions.OptionOneHelpText)));
+                    Assert.That(reader.ReadLine(), Is.EqualTo(string.Format("{0}{1}", "  --option-two".PadRight(OptionsParser.HelpOutputColumnPadding), HelpOptions.OptionTwoHelpText)));
+                    Assert.That(reader.ReadLine(), Is.EqualTo(string.Format("{0}{1}", "  --custom-value-description=<path>".PadRight(OptionsParser.HelpOutputColumnPadding), HelpOptions.CustomValueDescriptionHelpText)));
                 }
             }
         }
@@ -203,12 +203,12 @@ namespace Unity.Options.Tests
 
                 using (var reader = new StreamReader(tempFile.Path.ToString()))
                 {
-                    Assert.AreEqual("", reader.ReadLine());
-                    Assert.AreEqual("Options:", reader.ReadLine());
+                    Assert.That(reader.ReadLine(), Is.EqualTo(""));
+                    Assert.That(reader.ReadLine(), Is.EqualTo("Options:"));
 
-                    Assert.AreEqual(string.Format("{0}{1}", "  --option-one=<value>".PadRight(OptionsParser.HelpOutputColumnPadding), HelpOptions.OptionOneHelpText), reader.ReadLine());
-                    Assert.AreEqual(string.Format("{0}{1}", "  --option-two".PadRight(OptionsParser.HelpOutputColumnPadding), HelpOptions.OptionTwoHelpText), reader.ReadLine());
-                    Assert.AreEqual(string.Format("{0}{1}", "  --custom-value-description=<path>".PadRight(OptionsParser.HelpOutputColumnPadding), HelpOptions.CustomValueDescriptionHelpText), reader.ReadLine());
+                    Assert.That(reader.ReadLine(), Is.EqualTo(string.Format("{0}{1}", "  --option-one=<value>".PadRight(OptionsParser.HelpOutputColumnPadding), HelpOptions.OptionOneHelpText)));
+                    Assert.That(reader.ReadLine(), Is.EqualTo(string.Format("{0}{1}", "  --option-two".PadRight(OptionsParser.HelpOutputColumnPadding), HelpOptions.OptionTwoHelpText)));
+                    Assert.That(reader.ReadLine(), Is.EqualTo(string.Format("{0}{1}", "  --custom-value-description=<path>".PadRight(OptionsParser.HelpOutputColumnPadding), HelpOptions.CustomValueDescriptionHelpText)));
                 }
             }
         }
@@ -223,7 +223,7 @@ namespace Unity.Options.Tests
             var instance = new OptionsWithAliasesCustom();
             OptionsParser.PrepareInstances<CustomOptionAliasAttribute>(commandLine, new[] {instance}, attr => attr.Name);
 
-            Assert.AreEqual("hello", instance.OptionWithAlias);
+            Assert.That(instance.OptionWithAlias, Is.EqualTo("hello"));
         }
 
         [Test]
@@ -236,7 +236,7 @@ namespace Unity.Options.Tests
             var instance = new OptionsWithAliasesCustom();
             OptionsParser.PrepareInstances<CustomOptionAliasAttribute>(commandLine, new[] {instance}, attr => attr.Name);
 
-            Assert.AreEqual("hello", instance.OptionWithMultipleAliases);
+            Assert.That(instance.OptionWithMultipleAliases, Is.EqualTo("hello"));
         }
 
         [Test]
@@ -249,7 +249,7 @@ namespace Unity.Options.Tests
             var instance = new OptionsWithAliasesCustom();
             OptionsParser.PrepareInstances<CustomOptionAliasAttribute>(commandLine, new[] {instance}, attr => attr.Name);
 
-            Assert.AreEqual(true, instance.BoolOptionWithAlias);
+            Assert.That(instance.BoolOptionWithAlias, Is.EqualTo(true));
         }
     }
 }
