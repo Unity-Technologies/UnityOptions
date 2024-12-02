@@ -21,7 +21,7 @@ namespace Unity.Options.Tests
 
             OptionsParser.Prepare(commandLine, types);
 
-            Assert.AreEqual(10, SimpleOptions.Value);
+            Assert.That(SimpleOptions.Value, Is.EqualTo(10));
         }
 
         [Test]
@@ -32,7 +32,7 @@ namespace Unity.Options.Tests
 
             OptionsParser.Prepare(commandLine, types);
 
-            Assert.AreEqual(15, SimpleOptionsUsingNonPublicFields.GetValuePrivate);
+            Assert.That(SimpleOptionsUsingNonPublicFields.GetValuePrivate, Is.EqualTo(15));
         }
 
         [Test]
@@ -43,7 +43,7 @@ namespace Unity.Options.Tests
 
             OptionsParser.Prepare(commandLine, types);
 
-            Assert.AreEqual(15, SimpleOptionsUsingNonPublicFields.ValueInternal);
+            Assert.That(SimpleOptionsUsingNonPublicFields.ValueInternal, Is.EqualTo(15));
         }
 
         [Test]
@@ -54,8 +54,8 @@ namespace Unity.Options.Tests
 
             OptionsParser.Prepare(commandLine, types);
 
-            Assert.AreEqual(10, MultipleSimpleOptions.Value);
-            Assert.AreEqual(11, MultipleSimpleOptions.SecondValue);
+            Assert.That(MultipleSimpleOptions.Value, Is.EqualTo(10));
+            Assert.That(MultipleSimpleOptions.SecondValue, Is.EqualTo(11));
         }
 
         [Test]
@@ -70,8 +70,8 @@ namespace Unity.Options.Tests
 
             OptionsParser.Prepare(commandLine, types);
 
-            Assert.AreEqual(10, MultipleSimpleOptions.Value);
-            Assert.AreEqual(11, MultipleSimpleOptions.SecondValue);
+            Assert.That(MultipleSimpleOptions.Value, Is.EqualTo(10));
+            Assert.That(MultipleSimpleOptions.SecondValue, Is.EqualTo(11));
         }
 
         [Test]
@@ -86,8 +86,8 @@ namespace Unity.Options.Tests
 
             OptionsParser.Prepare(commandLine, types);
 
-            Assert.AreEqual(10, CustomGroupOptions.Value);
-            Assert.AreEqual(11, CustomGroupOptions.SecondValue);
+            Assert.That(CustomGroupOptions.Value, Is.EqualTo(10));
+            Assert.That(CustomGroupOptions.SecondValue, Is.EqualTo(11));
         }
 
         [Test]
@@ -115,21 +115,21 @@ namespace Unity.Options.Tests
 
             OptionsParser.Prepare(commandLine, types);
 
-            Assert.AreEqual('1', BasicTypesOptions.CharValue);
-            Assert.AreEqual(2, BasicTypesOptions.ByteValue);
-            Assert.AreEqual(3, BasicTypesOptions.SByteValue);
-            Assert.AreEqual(4, BasicTypesOptions.ShortValue);
-            Assert.AreEqual(5, BasicTypesOptions.UShortValue);
-            Assert.AreEqual(6, BasicTypesOptions.IntValue);
-            Assert.AreEqual(7, BasicTypesOptions.UIntValue);
-            Assert.AreEqual(8, BasicTypesOptions.LongValue);
-            Assert.AreEqual(9, BasicTypesOptions.ULongValue);
-            Assert.AreEqual(10.42f, BasicTypesOptions.FloatValue);
-            Assert.AreEqual(11.33, BasicTypesOptions.DoubleValue);
-            Assert.AreEqual(true, BasicTypesOptions.BoolValue);
-            Assert.AreEqual("gabriele farina", BasicTypesOptions.StringValueWithSpaces);
-            Assert.AreEqual("gabrielefarina", BasicTypesOptions.StringValueNoSpaces);
-            Assert.AreEqual("C:\\My\\Path", BasicTypesOptions.StringValueWithPath);
+            Assert.That(BasicTypesOptions.CharValue, Is.EqualTo('1'));
+            Assert.That(BasicTypesOptions.ByteValue, Is.EqualTo(2));
+            Assert.That(BasicTypesOptions.SByteValue, Is.EqualTo(3));
+            Assert.That(BasicTypesOptions.ShortValue, Is.EqualTo(4));
+            Assert.That(BasicTypesOptions.UShortValue, Is.EqualTo(5));
+            Assert.That(BasicTypesOptions.IntValue, Is.EqualTo(6));
+            Assert.That(BasicTypesOptions.UIntValue, Is.EqualTo(7));
+            Assert.That(BasicTypesOptions.LongValue, Is.EqualTo(8));
+            Assert.That(BasicTypesOptions.ULongValue, Is.EqualTo(9));
+            Assert.That(BasicTypesOptions.FloatValue, Is.EqualTo(10.42f));
+            Assert.That(BasicTypesOptions.DoubleValue, Is.EqualTo(11.33));
+            Assert.That(BasicTypesOptions.BoolValue, Is.EqualTo(true));
+            Assert.That(BasicTypesOptions.StringValueWithSpaces, Is.EqualTo("gabriele farina"));
+            Assert.That(BasicTypesOptions.StringValueNoSpaces, Is.EqualTo("gabrielefarina"));
+            Assert.That(BasicTypesOptions.StringValueWithPath, Is.EqualTo("C:\\My\\Path"));
         }
         
         [Test]
@@ -157,21 +157,21 @@ namespace Unity.Options.Tests
 
             OptionsParser.Prepare(commandLine, types);
 
-            Assert.AreEqual('1', BasicTypesOptions.CharValue);
-            Assert.AreEqual(2, BasicTypesOptions.ByteValue);
-            Assert.AreEqual(3, BasicTypesOptions.SByteValue);
-            Assert.AreEqual(4, BasicTypesOptions.ShortValue);
-            Assert.AreEqual(5, BasicTypesOptions.UShortValue);
-            Assert.AreEqual(6, BasicTypesOptions.IntValue);
-            Assert.AreEqual(7, BasicTypesOptions.UIntValue);
-            Assert.AreEqual(8, BasicTypesOptions.LongValue);
-            Assert.AreEqual(9, BasicTypesOptions.ULongValue);
-            Assert.AreEqual(10.42f, BasicTypesOptions.FloatValue);
-            Assert.AreEqual(11.33, BasicTypesOptions.DoubleValue);
-            Assert.AreEqual(true, BasicTypesOptions.BoolValue);
-            Assert.AreEqual("gabriele farina", BasicTypesOptions.StringValueWithSpaces);
-            Assert.AreEqual("gabrielefarina", BasicTypesOptions.StringValueNoSpaces);
-            Assert.AreEqual("C:\\My\\Path", BasicTypesOptions.StringValueWithPath);
+            Assert.That(BasicTypesOptions.CharValue, Is.EqualTo('1'));
+            Assert.That(BasicTypesOptions.ByteValue, Is.EqualTo(2));
+            Assert.That(BasicTypesOptions.SByteValue, Is.EqualTo(3));
+            Assert.That(BasicTypesOptions.ShortValue, Is.EqualTo(4));
+            Assert.That(BasicTypesOptions.UShortValue, Is.EqualTo(5));
+            Assert.That(BasicTypesOptions.IntValue, Is.EqualTo(6));
+            Assert.That(BasicTypesOptions.UIntValue, Is.EqualTo(7));
+            Assert.That(BasicTypesOptions.LongValue, Is.EqualTo(8));
+            Assert.That(BasicTypesOptions.ULongValue, Is.EqualTo(9));
+            Assert.That(BasicTypesOptions.FloatValue, Is.EqualTo(10.42f));
+            Assert.That(BasicTypesOptions.DoubleValue, Is.EqualTo(11.33));
+            Assert.That(BasicTypesOptions.BoolValue, Is.EqualTo(true));
+            Assert.That(BasicTypesOptions.StringValueWithSpaces, Is.EqualTo("gabriele farina"));
+            Assert.That(BasicTypesOptions.StringValueNoSpaces, Is.EqualTo("gabrielefarina"));
+            Assert.That(BasicTypesOptions.StringValueWithPath, Is.EqualTo("C:\\My\\Path"));
         }
 
         [Test]
@@ -191,8 +191,8 @@ namespace Unity.Options.Tests
             {
                 OptionsParser.Prepare(commandLine, types);
 
-                Assert.AreEqual(10.42f, BasicTypesOptions.FloatValue);
-                Assert.AreEqual(11.33, BasicTypesOptions.DoubleValue);
+                Assert.That(BasicTypesOptions.FloatValue, Is.EqualTo(10.42f));
+                Assert.That(BasicTypesOptions.DoubleValue, Is.EqualTo(11.33));
             }
             finally
             {
@@ -211,10 +211,10 @@ namespace Unity.Options.Tests
 
             OptionsParser.Prepare(commandLine, types);
 
-            Assert.AreEqual(3, ArrayOptions.IntArray.Length);
-            Assert.AreEqual(1, ArrayOptions.IntArray[0]);
-            Assert.AreEqual(2, ArrayOptions.IntArray[1]);
-            Assert.AreEqual(3, ArrayOptions.IntArray[2]);
+            Assert.That(ArrayOptions.IntArray.Length, Is.EqualTo(3));
+            Assert.That(ArrayOptions.IntArray[0], Is.EqualTo(1));
+            Assert.That(ArrayOptions.IntArray[1], Is.EqualTo(2));
+            Assert.That(ArrayOptions.IntArray[2], Is.EqualTo(3));
         }
 
         [Test]
@@ -228,10 +228,10 @@ namespace Unity.Options.Tests
 
             OptionsParser.Prepare(commandLine, types);
 
-            Assert.AreEqual(3, CustomArrayOptions.IntArray.Length);
-            Assert.AreEqual(1, CustomArrayOptions.IntArray[0]);
-            Assert.AreEqual(2, CustomArrayOptions.IntArray[1]);
-            Assert.AreEqual(3, CustomArrayOptions.IntArray[2]);
+            Assert.That(CustomArrayOptions.IntArray.Length, Is.EqualTo(3));
+            Assert.That(CustomArrayOptions.IntArray[0], Is.EqualTo(1));
+            Assert.That(CustomArrayOptions.IntArray[1], Is.EqualTo(2));
+            Assert.That(CustomArrayOptions.IntArray[2], Is.EqualTo(3));
         }
 
         [Test]
@@ -247,10 +247,10 @@ namespace Unity.Options.Tests
 
             OptionsParser.Prepare(commandLine, types);
 
-            Assert.AreEqual(3, ArrayRepetitionOptions.IntArray.Length);
-            Assert.AreEqual(1, ArrayRepetitionOptions.IntArray[0]);
-            Assert.AreEqual(2, ArrayRepetitionOptions.IntArray[1]);
-            Assert.AreEqual(3, ArrayRepetitionOptions.IntArray[2]);
+            Assert.That(ArrayRepetitionOptions.IntArray.Length, Is.EqualTo(3));
+            Assert.That(ArrayRepetitionOptions.IntArray[0], Is.EqualTo(1));
+            Assert.That(ArrayRepetitionOptions.IntArray[1], Is.EqualTo(2));
+            Assert.That(ArrayRepetitionOptions.IntArray[2], Is.EqualTo(3));
         }
 
         [Test]
@@ -276,57 +276,57 @@ namespace Unity.Options.Tests
 
             OptionsParser.Prepare(commandLine, types);
 
-            Assert.AreEqual(2, ArrayBasicTypesOptions.CharValue.Length);
-            Assert.AreEqual('1', ArrayBasicTypesOptions.CharValue[0]);
-            Assert.AreEqual('a', ArrayBasicTypesOptions.CharValue[1]);
+            Assert.That(ArrayBasicTypesOptions.CharValue.Length, Is.EqualTo(2));
+            Assert.That(ArrayBasicTypesOptions.CharValue[0], Is.EqualTo('1'));
+            Assert.That(ArrayBasicTypesOptions.CharValue[1], Is.EqualTo('a'));
 
-            Assert.AreEqual(2, ArrayBasicTypesOptions.ByteValue.Length);
-            Assert.AreEqual(2, ArrayBasicTypesOptions.ByteValue[0]);
-            Assert.AreEqual(22, ArrayBasicTypesOptions.ByteValue[1]);
+            Assert.That(ArrayBasicTypesOptions.ByteValue.Length, Is.EqualTo(2));
+            Assert.That(ArrayBasicTypesOptions.ByteValue[0], Is.EqualTo(2));
+            Assert.That(ArrayBasicTypesOptions.ByteValue[1], Is.EqualTo(22));
 
-            Assert.AreEqual(2, ArrayBasicTypesOptions.SByteValue.Length);
-            Assert.AreEqual(3, ArrayBasicTypesOptions.SByteValue[0]);
-            Assert.AreEqual(33, ArrayBasicTypesOptions.SByteValue[1]);
+            Assert.That(ArrayBasicTypesOptions.SByteValue.Length, Is.EqualTo(2));
+            Assert.That(ArrayBasicTypesOptions.SByteValue[0], Is.EqualTo(3));
+            Assert.That(ArrayBasicTypesOptions.SByteValue[1], Is.EqualTo(33));
 
-            Assert.AreEqual(2, ArrayBasicTypesOptions.ShortValue.Length);
-            Assert.AreEqual(4, ArrayBasicTypesOptions.ShortValue[0]);
-            Assert.AreEqual(44, ArrayBasicTypesOptions.ShortValue[1]);
+            Assert.That(ArrayBasicTypesOptions.ShortValue.Length, Is.EqualTo(2));
+            Assert.That(ArrayBasicTypesOptions.ShortValue[0], Is.EqualTo(4));
+            Assert.That(ArrayBasicTypesOptions.ShortValue[1], Is.EqualTo(44));
 
-            Assert.AreEqual(2, ArrayBasicTypesOptions.UShortValue.Length);
-            Assert.AreEqual(5, ArrayBasicTypesOptions.UShortValue[0]);
-            Assert.AreEqual(55, ArrayBasicTypesOptions.UShortValue[1]);
+            Assert.That(ArrayBasicTypesOptions.UShortValue.Length, Is.EqualTo(2));
+            Assert.That(ArrayBasicTypesOptions.UShortValue[0], Is.EqualTo(5));
+            Assert.That(ArrayBasicTypesOptions.UShortValue[1], Is.EqualTo(55));
 
-            Assert.AreEqual(2, ArrayBasicTypesOptions.IntValue.Length);
-            Assert.AreEqual(6, ArrayBasicTypesOptions.IntValue[0]);
-            Assert.AreEqual(66, ArrayBasicTypesOptions.IntValue[1]);
+            Assert.That(ArrayBasicTypesOptions.IntValue.Length, Is.EqualTo(2));
+            Assert.That(ArrayBasicTypesOptions.IntValue[0], Is.EqualTo(6));
+            Assert.That(ArrayBasicTypesOptions.IntValue[1], Is.EqualTo(66));
 
-            Assert.AreEqual(2, ArrayBasicTypesOptions.UIntValue.Length);
-            Assert.AreEqual(7, ArrayBasicTypesOptions.UIntValue[0]);
-            Assert.AreEqual(77, ArrayBasicTypesOptions.UIntValue[1]);
+            Assert.That(ArrayBasicTypesOptions.UIntValue.Length, Is.EqualTo(2));
+            Assert.That(ArrayBasicTypesOptions.UIntValue[0], Is.EqualTo(7));
+            Assert.That(ArrayBasicTypesOptions.UIntValue[1], Is.EqualTo(77));
 
-            Assert.AreEqual(2, ArrayBasicTypesOptions.LongValue.Length);
-            Assert.AreEqual(8, ArrayBasicTypesOptions.LongValue[0]);
-            Assert.AreEqual(88, ArrayBasicTypesOptions.LongValue[1]);
+            Assert.That(ArrayBasicTypesOptions.LongValue.Length, Is.EqualTo(2));
+            Assert.That(ArrayBasicTypesOptions.LongValue[0], Is.EqualTo(8));
+            Assert.That(ArrayBasicTypesOptions.LongValue[1], Is.EqualTo(88));
 
-            Assert.AreEqual(2, ArrayBasicTypesOptions.ULongValue.Length);
-            Assert.AreEqual(9, ArrayBasicTypesOptions.ULongValue[0]);
-            Assert.AreEqual(99, ArrayBasicTypesOptions.ULongValue[1]);
+            Assert.That(ArrayBasicTypesOptions.ULongValue.Length, Is.EqualTo(2));
+            Assert.That(ArrayBasicTypesOptions.ULongValue[0], Is.EqualTo(9));
+            Assert.That(ArrayBasicTypesOptions.ULongValue[1], Is.EqualTo(99));
 
-            Assert.AreEqual(2, ArrayBasicTypesOptions.FloatValue.Length);
-            Assert.AreEqual(10.42f, ArrayBasicTypesOptions.FloatValue[0]);
-            Assert.AreEqual(1042.1042f, ArrayBasicTypesOptions.FloatValue[1]);
+            Assert.That(ArrayBasicTypesOptions.FloatValue.Length, Is.EqualTo(2));
+            Assert.That(ArrayBasicTypesOptions.FloatValue[0], Is.EqualTo(10.42f));
+            Assert.That(ArrayBasicTypesOptions.FloatValue[1], Is.EqualTo(1042.1042f));
 
-            Assert.AreEqual(2, ArrayBasicTypesOptions.DoubleValue.Length);
-            Assert.AreEqual(11.33, ArrayBasicTypesOptions.DoubleValue[0]);
-            Assert.AreEqual(1133.1133, ArrayBasicTypesOptions.DoubleValue[1]);
+            Assert.That(ArrayBasicTypesOptions.DoubleValue.Length, Is.EqualTo(2));
+            Assert.That(ArrayBasicTypesOptions.DoubleValue[0], Is.EqualTo(11.33));
+            Assert.That(ArrayBasicTypesOptions.DoubleValue[1], Is.EqualTo(1133.1133));
 
-            Assert.AreEqual(2, ArrayBasicTypesOptions.BoolValue.Length);
-            Assert.AreEqual(false, ArrayBasicTypesOptions.BoolValue[0]);
-            Assert.AreEqual(true, ArrayBasicTypesOptions.BoolValue[1]);
+            Assert.That(ArrayBasicTypesOptions.BoolValue.Length, Is.EqualTo(2));
+            Assert.That(ArrayBasicTypesOptions.BoolValue[0], Is.EqualTo(false));
+            Assert.That(ArrayBasicTypesOptions.BoolValue[1], Is.EqualTo(true));
 
-            Assert.AreEqual(2, ArrayBasicTypesOptions.StringValue.Length);
-            Assert.AreEqual("gabriele farina", ArrayBasicTypesOptions.StringValue[0]);
-            Assert.AreEqual("ralph hauwert", ArrayBasicTypesOptions.StringValue[1]);
+            Assert.That(ArrayBasicTypesOptions.StringValue.Length, Is.EqualTo(2));
+            Assert.That(ArrayBasicTypesOptions.StringValue[0], Is.EqualTo("gabriele farina"));
+            Assert.That(ArrayBasicTypesOptions.StringValue[1], Is.EqualTo("ralph hauwert"));
         }
 
         [Test]
@@ -340,10 +340,10 @@ namespace Unity.Options.Tests
 
             OptionsParser.Prepare(commandLine, types);
 
-            Assert.AreEqual(3, ListOptions.IntList.Count);
-            Assert.AreEqual(1, ListOptions.IntList[0]);
-            Assert.AreEqual(2, ListOptions.IntList[1]);
-            Assert.AreEqual(3, ListOptions.IntList[2]);
+            Assert.That(ListOptions.IntList.Count, Is.EqualTo(3));
+            Assert.That(ListOptions.IntList[0], Is.EqualTo(1));
+            Assert.That(ListOptions.IntList[1], Is.EqualTo(2));
+            Assert.That(ListOptions.IntList[2], Is.EqualTo(3));
         }
 
         [Test]
@@ -357,10 +357,10 @@ namespace Unity.Options.Tests
 
             OptionsParser.Prepare(commandLine, types);
 
-            Assert.AreEqual(3, CustomListOptions.IntList.Count);
-            Assert.AreEqual(1, CustomListOptions.IntList[0]);
-            Assert.AreEqual(2, CustomListOptions.IntList[1]);
-            Assert.AreEqual(3, CustomListOptions.IntList[2]);
+            Assert.That(CustomListOptions.IntList.Count, Is.EqualTo(3));
+            Assert.That(CustomListOptions.IntList[0], Is.EqualTo(1));
+            Assert.That(CustomListOptions.IntList[1], Is.EqualTo(2));
+            Assert.That(CustomListOptions.IntList[2], Is.EqualTo(3));
         }
 
         [Test]
@@ -376,10 +376,10 @@ namespace Unity.Options.Tests
 
             OptionsParser.Prepare(commandLine, types);
 
-            Assert.AreEqual(3, ListRepetitionOptions.IntList.Count);
-            Assert.AreEqual(1, ListRepetitionOptions.IntList[0]);
-            Assert.AreEqual(2, ListRepetitionOptions.IntList[1]);
-            Assert.AreEqual(3, ListRepetitionOptions.IntList[2]);
+            Assert.That(ListRepetitionOptions.IntList.Count, Is.EqualTo(3));
+            Assert.That(ListRepetitionOptions.IntList[0], Is.EqualTo(1));
+            Assert.That(ListRepetitionOptions.IntList[1], Is.EqualTo(2));
+            Assert.That(ListRepetitionOptions.IntList[2], Is.EqualTo(3));
         }
 
         [Test]
@@ -405,57 +405,57 @@ namespace Unity.Options.Tests
 
             OptionsParser.Prepare(commandLine, types);
 
-            Assert.AreEqual(2, ListBasicTypesOptions.CharList.Count);
-            Assert.AreEqual('1', ListBasicTypesOptions.CharList[0]);
-            Assert.AreEqual('a', ListBasicTypesOptions.CharList[1]);
+            Assert.That(ListBasicTypesOptions.CharList.Count, Is.EqualTo(2));
+            Assert.That(ListBasicTypesOptions.CharList[0], Is.EqualTo('1'));
+            Assert.That(ListBasicTypesOptions.CharList[1], Is.EqualTo('a'));
 
-            Assert.AreEqual(2, ListBasicTypesOptions.ByteList.Count);
-            Assert.AreEqual(2, ListBasicTypesOptions.ByteList[0]);
-            Assert.AreEqual(22, ListBasicTypesOptions.ByteList[1]);
+            Assert.That(ListBasicTypesOptions.ByteList.Count, Is.EqualTo(2));
+            Assert.That(ListBasicTypesOptions.ByteList[0], Is.EqualTo(2));
+            Assert.That(ListBasicTypesOptions.ByteList[1], Is.EqualTo(22));
 
-            Assert.AreEqual(2, ListBasicTypesOptions.SByteList.Count);
-            Assert.AreEqual(3, ListBasicTypesOptions.SByteList[0]);
-            Assert.AreEqual(33, ListBasicTypesOptions.SByteList[1]);
+            Assert.That(ListBasicTypesOptions.SByteList.Count, Is.EqualTo(2));
+            Assert.That(ListBasicTypesOptions.SByteList[0], Is.EqualTo(3));
+            Assert.That(ListBasicTypesOptions.SByteList[1], Is.EqualTo(33));
 
-            Assert.AreEqual(2, ListBasicTypesOptions.ShortList.Count);
-            Assert.AreEqual(4, ListBasicTypesOptions.ShortList[0]);
-            Assert.AreEqual(44, ListBasicTypesOptions.ShortList[1]);
+            Assert.That(ListBasicTypesOptions.ShortList.Count, Is.EqualTo(2));
+            Assert.That(ListBasicTypesOptions.ShortList[0], Is.EqualTo(4));
+            Assert.That(ListBasicTypesOptions.ShortList[1], Is.EqualTo(44));
 
-            Assert.AreEqual(2, ListBasicTypesOptions.UShortList.Count);
-            Assert.AreEqual(5, ListBasicTypesOptions.UShortList[0]);
-            Assert.AreEqual(55, ListBasicTypesOptions.UShortList[1]);
+            Assert.That(ListBasicTypesOptions.UShortList.Count, Is.EqualTo(2));
+            Assert.That(ListBasicTypesOptions.UShortList[0], Is.EqualTo(5));
+            Assert.That(ListBasicTypesOptions.UShortList[1], Is.EqualTo(55));
 
-            Assert.AreEqual(2, ListBasicTypesOptions.IntList.Count);
-            Assert.AreEqual(6, ListBasicTypesOptions.IntList[0]);
-            Assert.AreEqual(66, ListBasicTypesOptions.IntList[1]);
+            Assert.That(ListBasicTypesOptions.IntList.Count, Is.EqualTo(2));
+            Assert.That(ListBasicTypesOptions.IntList[0], Is.EqualTo(6));
+            Assert.That(ListBasicTypesOptions.IntList[1], Is.EqualTo(66));
 
-            Assert.AreEqual(2, ListBasicTypesOptions.UIntList.Count);
-            Assert.AreEqual(7, ListBasicTypesOptions.UIntList[0]);
-            Assert.AreEqual(77, ListBasicTypesOptions.UIntList[1]);
+            Assert.That(ListBasicTypesOptions.UIntList.Count, Is.EqualTo(2));
+            Assert.That(ListBasicTypesOptions.UIntList[0], Is.EqualTo(7));
+            Assert.That(ListBasicTypesOptions.UIntList[1], Is.EqualTo(77));
 
-            Assert.AreEqual(2, ListBasicTypesOptions.LongList.Count);
-            Assert.AreEqual(8, ListBasicTypesOptions.LongList[0]);
-            Assert.AreEqual(88, ListBasicTypesOptions.LongList[1]);
+            Assert.That(ListBasicTypesOptions.LongList.Count, Is.EqualTo(2));
+            Assert.That(ListBasicTypesOptions.LongList[0], Is.EqualTo(8));
+            Assert.That(ListBasicTypesOptions.LongList[1], Is.EqualTo(88));
 
-            Assert.AreEqual(2, ListBasicTypesOptions.ULongList.Count);
-            Assert.AreEqual(9, ListBasicTypesOptions.ULongList[0]);
-            Assert.AreEqual(99, ListBasicTypesOptions.ULongList[1]);
+            Assert.That(ListBasicTypesOptions.ULongList.Count, Is.EqualTo(2));
+            Assert.That(ListBasicTypesOptions.ULongList[0], Is.EqualTo(9));
+            Assert.That(ListBasicTypesOptions.ULongList[1], Is.EqualTo(99));
 
-            Assert.AreEqual(2, ListBasicTypesOptions.FloatList.Count);
-            Assert.AreEqual(10.42f, ListBasicTypesOptions.FloatList[0]);
-            Assert.AreEqual(1042.1042f, ListBasicTypesOptions.FloatList[1]);
+            Assert.That(ListBasicTypesOptions.FloatList.Count, Is.EqualTo(2));
+            Assert.That(ListBasicTypesOptions.FloatList[0], Is.EqualTo(10.42f));
+            Assert.That(ListBasicTypesOptions.FloatList[1], Is.EqualTo(1042.1042f));
 
-            Assert.AreEqual(2, ListBasicTypesOptions.DoubleList.Count);
-            Assert.AreEqual(11.33, ListBasicTypesOptions.DoubleList[0]);
-            Assert.AreEqual(1133.1133, ListBasicTypesOptions.DoubleList[1]);
+            Assert.That(ListBasicTypesOptions.DoubleList.Count, Is.EqualTo(2));
+            Assert.That(ListBasicTypesOptions.DoubleList[0], Is.EqualTo(11.33));
+            Assert.That(ListBasicTypesOptions.DoubleList[1], Is.EqualTo(1133.1133));
 
-            Assert.AreEqual(2, ListBasicTypesOptions.BoolList.Count);
-            Assert.AreEqual(false, ListBasicTypesOptions.BoolList[0]);
-            Assert.AreEqual(true, ListBasicTypesOptions.BoolList[1]);
+            Assert.That(ListBasicTypesOptions.BoolList.Count, Is.EqualTo(2));
+            Assert.That(ListBasicTypesOptions.BoolList[0], Is.EqualTo(false));
+            Assert.That(ListBasicTypesOptions.BoolList[1], Is.EqualTo(true));
 
-            Assert.AreEqual(2, ListBasicTypesOptions.StringList.Count);
-            Assert.AreEqual("gabriele farina", ListBasicTypesOptions.StringList[0]);
-            Assert.AreEqual("ralph hauwert", ListBasicTypesOptions.StringList[1]);
+            Assert.That(ListBasicTypesOptions.StringList.Count, Is.EqualTo(2));
+            Assert.That(ListBasicTypesOptions.StringList[0], Is.EqualTo("gabriele farina"));
+            Assert.That(ListBasicTypesOptions.StringList[1], Is.EqualTo("ralph hauwert"));
         }
 
         [Test]
@@ -465,7 +465,7 @@ namespace Unity.Options.Tests
 
             OptionsParser.Prepare(commandLine, typeof(ExternalOptions).Assembly);
 
-            Assert.AreEqual(10, ExternalOptions.Value);
+            Assert.That(ExternalOptions.Value, Is.EqualTo(10));
         }
 
         [Test]
@@ -478,8 +478,8 @@ namespace Unity.Options.Tests
 
                 OptionsParser.PrepareFromFile(testFile.Path.ToString(), new Type[] { typeof(FromFileOptions) });
 
-                Assert.AreEqual(10, FromFileOptions.FromFileValueOne);
-                Assert.AreEqual(15, FromFileOptions.FromFileValueTwo);
+                Assert.That(FromFileOptions.FromFileValueOne, Is.EqualTo(10));
+                Assert.That(FromFileOptions.FromFileValueTwo, Is.EqualTo(15));
             }
         }
 
@@ -494,8 +494,8 @@ namespace Unity.Options.Tests
 
             OptionsParser.Prepare(commandLine, typeof(ExternalOptions).Assembly);
 
-            Assert.AreEqual(10, ExternalOptions.Value);
-            Assert.AreEqual("gabriele", OtherOptions.Name);
+            Assert.That(ExternalOptions.Value, Is.EqualTo(10));
+            Assert.That(OtherOptions.Name, Is.EqualTo("gabriele"));
         }
 
         [Test]
@@ -509,7 +509,7 @@ namespace Unity.Options.Tests
 
             OptionsParser.Prepare(commandLine, types);
 
-            Assert.AreEqual(Values.First, EnumOptions.EnumValue);
+            Assert.That(EnumOptions.EnumValue, Is.EqualTo(Values.First));
         }
 
         [Test]
@@ -523,9 +523,9 @@ namespace Unity.Options.Tests
 
             OptionsParser.Prepare(commandLine, types);
 
-            Assert.AreEqual(2, EnumArrayOptions.EnumArrayValue.Length);
-            Assert.AreEqual(Values.First, EnumArrayOptions.EnumArrayValue[0]);
-            Assert.AreEqual(Values.Second, EnumArrayOptions.EnumArrayValue[1]);
+            Assert.That(EnumArrayOptions.EnumArrayValue.Length, Is.EqualTo(2));
+            Assert.That(EnumArrayOptions.EnumArrayValue[0], Is.EqualTo(Values.First));
+            Assert.That(EnumArrayOptions.EnumArrayValue[1], Is.EqualTo(Values.Second));
         }
 
         [Test]
@@ -539,7 +539,7 @@ namespace Unity.Options.Tests
 
             OptionsParser.Prepare(commandLine, types);
 
-            Assert.AreEqual(FlagValues.One | FlagValues.Three, FlagsEnumOptions.Flags);
+            Assert.That(FlagsEnumOptions.Flags, Is.EqualTo(FlagValues.One | FlagValues.Three));
         }
         
         [Test]
@@ -553,7 +553,7 @@ namespace Unity.Options.Tests
 
             OptionsParser.Prepare(commandLine, types);
 
-            Assert.AreEqual(FlagValuesUInt.One | FlagValuesUInt.Three, FlagsEnumUIntOptions.Flags);
+            Assert.That(FlagsEnumUIntOptions.Flags, Is.EqualTo(FlagValuesUInt.One | FlagValuesUInt.Three));
         }
         
         [Test]
@@ -567,7 +567,7 @@ namespace Unity.Options.Tests
 
             OptionsParser.Prepare(commandLine, types);
 
-            Assert.AreEqual(FlagValuesShort.One | FlagValuesShort.Three, FlagsEnumShortOptions.Flags);
+            Assert.That(FlagsEnumShortOptions.Flags, Is.EqualTo(FlagValuesShort.One | FlagValuesShort.Three));
         }
         
         [Test]
@@ -581,7 +581,7 @@ namespace Unity.Options.Tests
 
             OptionsParser.Prepare(commandLine, types);
 
-            Assert.AreEqual(FlagValuesByte.One | FlagValuesByte.Three, FlagsEnumByteOptions.Flags);
+            Assert.That(FlagsEnumByteOptions.Flags, Is.EqualTo(FlagValuesByte.One | FlagValuesByte.Three));
         }
         
         [Test]
@@ -595,7 +595,7 @@ namespace Unity.Options.Tests
 
             OptionsParser.Prepare(commandLine, types);
 
-            Assert.AreEqual(FlagValuesSByte.One | FlagValuesSByte.Two, FlagsEnumSByteOptions.Flags);
+            Assert.That(FlagsEnumSByteOptions.Flags, Is.EqualTo(FlagValuesSByte.One | FlagValuesSByte.Two));
         }
         
         [Test]
@@ -609,7 +609,7 @@ namespace Unity.Options.Tests
 
             OptionsParser.Prepare(commandLine, types);
 
-            Assert.AreEqual(FlagValuesLong.One | FlagValuesLong.Three, FlagsEnumLongOptions.Flags);
+            Assert.That(FlagsEnumLongOptions.Flags, Is.EqualTo(FlagValuesLong.One | FlagValuesLong.Three));
         }
         
         [Test]
@@ -623,7 +623,7 @@ namespace Unity.Options.Tests
 
             OptionsParser.Prepare(commandLine, types);
 
-            Assert.AreEqual(FlagValuesLong.Nine | FlagValuesLong.Ten, FlagsEnumLongOptions.Flags);
+            Assert.That(FlagsEnumLongOptions.Flags, Is.EqualTo(FlagValuesLong.Nine | FlagValuesLong.Ten));
         }
         
         [Test]
@@ -637,7 +637,7 @@ namespace Unity.Options.Tests
 
             OptionsParser.Prepare(commandLine, types);
 
-            Assert.AreEqual(FlagValuesLong.Ten, FlagsEnumLongOptions.Flags);
+            Assert.That(FlagsEnumLongOptions.Flags, Is.EqualTo(FlagValuesLong.Ten));
         }
         
         [Test]
@@ -651,7 +651,7 @@ namespace Unity.Options.Tests
 
             OptionsParser.Prepare(commandLine, types);
 
-            Assert.AreEqual(FlagValuesULong.One | FlagValuesULong.Three, FlagsEnumULongOptions.Flags);
+            Assert.That(FlagsEnumULongOptions.Flags, Is.EqualTo(FlagValuesULong.One | FlagValuesULong.Three));
         }
         
         [Test]
@@ -665,7 +665,7 @@ namespace Unity.Options.Tests
 
             OptionsParser.Prepare(commandLine, types);
 
-            Assert.AreEqual(FlagValuesULong.Nine | FlagValuesULong.Ten, FlagsEnumULongOptions.Flags);
+            Assert.That(FlagsEnumULongOptions.Flags, Is.EqualTo(FlagValuesULong.Nine | FlagValuesULong.Ten));
         }
         
         [Test]
@@ -679,7 +679,7 @@ namespace Unity.Options.Tests
 
             OptionsParser.Prepare(commandLine, types);
 
-            Assert.AreEqual(FlagValuesULong.Ten, FlagsEnumULongOptions.Flags);
+            Assert.That(FlagsEnumULongOptions.Flags, Is.EqualTo(FlagValuesULong.Ten));
         }
 
         [Test]
@@ -705,7 +705,7 @@ namespace Unity.Options.Tests
 
             OptionsParser.Prepare(commandLine, types);
 
-            Assert.AreEqual(true, BoolOptions.BoolValue);
+            Assert.That(BoolOptions.BoolValue, Is.EqualTo(true));
         }
 
         [Test]
@@ -719,7 +719,7 @@ namespace Unity.Options.Tests
 
             OptionsParser.Prepare(commandLine, types);
 
-            Assert.AreEqual("hello", OptionsWithAliases.OptionWithAlias);
+            Assert.That(OptionsWithAliases.OptionWithAlias, Is.EqualTo("hello"));
         }
 
         [Test]
@@ -733,7 +733,7 @@ namespace Unity.Options.Tests
 
             OptionsParser.Prepare(commandLine, types);
 
-            Assert.AreEqual("hello", OptionsWithAliases.OptionWithMultipleAliases);
+            Assert.That(OptionsWithAliases.OptionWithMultipleAliases, Is.EqualTo("hello"));
         }
 
         [Test]
@@ -747,7 +747,7 @@ namespace Unity.Options.Tests
 
             OptionsParser.Prepare(commandLine, types);
 
-            Assert.AreEqual(true, OptionsWithAliases.BoolOptionWithAlias);
+            Assert.That(OptionsWithAliases.BoolOptionWithAlias, Is.EqualTo(true));
         }
 
         [Test]
@@ -762,8 +762,8 @@ namespace Unity.Options.Tests
 
             OptionsParser.Prepare(commandLine, types, OptionsWithCustomParsers.ParseCustomArgumentType);
 
-            Assert.AreEqual("foo", OptionsWithCustomParsers.Arg1.Value);
-            Assert.AreEqual("bar", OptionsWithCustomParsers.Arg2.Value);
+            Assert.That(OptionsWithCustomParsers.Arg1.Value, Is.EqualTo("foo"));
+            Assert.That(OptionsWithCustomParsers.Arg2.Value, Is.EqualTo("bar"));
         }
 
         [Test]
@@ -783,13 +783,13 @@ namespace Unity.Options.Tests
         [Test]
         public void OptionNameForOnStringField()
         {
-            Assert.AreEqual("--string-value-with-spaces", OptionsParser.OptionNameFor(typeof(BasicTypesOptions), nameof(BasicTypesOptions.StringValueWithSpaces)));
+            Assert.That(OptionsParser.OptionNameFor(typeof(BasicTypesOptions), nameof(BasicTypesOptions.StringValueWithSpaces)), Is.EqualTo("--string-value-with-spaces"));
         }
 
         [Test]
         public void OptionNameForOnBoolField()
         {
-            Assert.AreEqual("--bool-value", OptionsParser.OptionNameFor(typeof(BasicTypesOptions), nameof(BasicTypesOptions.BoolValue)));
+            Assert.That(OptionsParser.OptionNameFor(typeof(BasicTypesOptions), nameof(BasicTypesOptions.BoolValue)), Is.EqualTo("--bool-value"));
         }
 
         [Test]
@@ -803,28 +803,28 @@ namespace Unity.Options.Tests
         {
             var result = OptionsParser.ParseHelpTable(typeof(HelpOptions));
             HelpInformation resultEntry;
-            Assert.IsTrue(result.TryGetValue("--option-one", out resultEntry));
-            Assert.AreEqual(HelpOptions.OptionOneHelpText, resultEntry.Summary);
-            Assert.AreEqual(typeof(string), resultEntry.FieldInfo.FieldType);
-            Assert.IsFalse(resultEntry.HasCustomValueDescription);
+            Assert.That(result.TryGetValue("--option-one", out resultEntry), Is.True);
+            Assert.That(resultEntry.Summary, Is.EqualTo(HelpOptions.OptionOneHelpText));
+            Assert.That(resultEntry.FieldInfo.FieldType, Is.EqualTo(typeof(string)));
+            Assert.That(resultEntry.HasCustomValueDescription, Is.False);
 
-            Assert.IsTrue(result.TryGetValue("--option-two", out resultEntry));
-            Assert.AreEqual(HelpOptions.OptionTwoHelpText, resultEntry.Summary);
-            Assert.AreEqual(typeof(bool), resultEntry.FieldInfo.FieldType);
-            Assert.IsFalse(resultEntry.HasCustomValueDescription);
+            Assert.That(result.TryGetValue("--option-two", out resultEntry), Is.True);
+            Assert.That(resultEntry.Summary, Is.EqualTo(HelpOptions.OptionTwoHelpText));
+            Assert.That(resultEntry.FieldInfo.FieldType, Is.EqualTo(typeof(bool)));
+            Assert.That(resultEntry.HasCustomValueDescription, Is.False);
 
-            Assert.IsTrue(result.TryGetValue("--option-missing-help-details", out resultEntry));
-            Assert.IsFalse(result["--option-missing-help-details"].HasSummary);
-            Assert.IsNotNull(result["--option-missing-help-details"].FieldInfo);
-            Assert.IsFalse(resultEntry.HasCustomValueDescription);
+            Assert.That(result.TryGetValue("--option-missing-help-details", out resultEntry), Is.True);
+            Assert.That(result["--option-missing-help-details"].HasSummary, Is.False);
+            Assert.That(result["--option-missing-help-details"].FieldInfo, Is.Not.Null);
+            Assert.That(resultEntry.HasCustomValueDescription, Is.False);
 
-            Assert.IsTrue(result.TryGetValue("--custom-value-description", out resultEntry));
-            Assert.IsTrue(resultEntry.HasSummary);
-            Assert.AreEqual(typeof(string), resultEntry.FieldInfo.FieldType);
-            Assert.AreEqual("path", resultEntry.CustomValueDescription);
-            Assert.IsTrue(resultEntry.HasCustomValueDescription);
+            Assert.That(result.TryGetValue("--custom-value-description", out resultEntry), Is.True);
+            Assert.That(resultEntry.HasSummary, Is.True);
+            Assert.That(resultEntry.FieldInfo.FieldType, Is.EqualTo(typeof(string)));
+            Assert.That(resultEntry.CustomValueDescription, Is.EqualTo("path"));
+            Assert.That(resultEntry.HasCustomValueDescription, Is.True);
 
-            Assert.AreEqual(4, result.Count);
+            Assert.That(result.Count, Is.EqualTo(4));
         }
 
         [Test]
@@ -832,7 +832,7 @@ namespace Unity.Options.Tests
         {
             var result = OptionsParser.ParseHelpTable(typeof(HelpOptions));
 
-            Assert.IsFalse(result.ContainsKey("--option-hidden"));
+            Assert.That(result.ContainsKey("--option-hidden"), Is.False);
         }
 
         [Test]
@@ -844,7 +844,7 @@ namespace Unity.Options.Tests
 
             var result = OptionsParser.ParseHelpTable(typeof(OtherOptions).Assembly);
 
-            Assert.IsTrue(result.Count > baseLine.Count);
+            Assert.That(result.Count > baseLine.Count, Is.True);
         }
 
         [Test]
@@ -859,12 +859,12 @@ namespace Unity.Options.Tests
 
                 using (var reader = new StreamReader(tempFile.Path.ToString()))
                 {
-                    Assert.AreEqual("", reader.ReadLine());
-                    Assert.AreEqual("Options:", reader.ReadLine());
+                    Assert.That(reader.ReadLine(), Is.EqualTo(""));
+                    Assert.That(reader.ReadLine(), Is.EqualTo("Options:"));
 
-                    Assert.AreEqual(string.Format("{0}{1}", "  --option-one=<value>".PadRight(OptionsParser.HelpOutputColumnPadding), HelpOptions.OptionOneHelpText), reader.ReadLine());
-                    Assert.AreEqual(string.Format("{0}{1}", "  --option-two".PadRight(OptionsParser.HelpOutputColumnPadding), HelpOptions.OptionTwoHelpText), reader.ReadLine());
-                    Assert.AreEqual(string.Format("{0}{1}", "  --custom-value-description=<path>".PadRight(OptionsParser.HelpOutputColumnPadding), HelpOptions.CustomValueDescriptionHelpText), reader.ReadLine());
+                    Assert.That(reader.ReadLine(), Is.EqualTo(string.Format("{0}{1}", "  --option-one=<value>".PadRight(OptionsParser.HelpOutputColumnPadding), HelpOptions.OptionOneHelpText)));
+                    Assert.That(reader.ReadLine(), Is.EqualTo(string.Format("{0}{1}", "  --option-two".PadRight(OptionsParser.HelpOutputColumnPadding), HelpOptions.OptionTwoHelpText)));
+                    Assert.That(reader.ReadLine(), Is.EqualTo(string.Format("{0}{1}", "  --custom-value-description=<path>".PadRight(OptionsParser.HelpOutputColumnPadding), HelpOptions.CustomValueDescriptionHelpText)));
                 }
             }
         }
@@ -881,11 +881,11 @@ namespace Unity.Options.Tests
 
                 using (var reader = new StreamReader(tempFile.Path.ToString()))
                 {
-                    Assert.AreEqual("", reader.ReadLine());
-                    Assert.AreEqual("Options:", reader.ReadLine());
+                    Assert.That(reader.ReadLine(), Is.EqualTo(""));
+                    Assert.That(reader.ReadLine(), Is.EqualTo("Options:"));
 
-                    Assert.AreEqual(string.Format("{0}{1}", "  --string-array=<value,value,..>".PadRight(OptionsParser.HelpOutputColumnPadding), HelpOptionsWithCollections.HelpText), reader.ReadLine());
-                    Assert.AreEqual(string.Format("{0}{1}", "  --string-list=<custom,custom,..>".PadRight(OptionsParser.HelpOutputColumnPadding), HelpOptionsWithCollections.HelpText), reader.ReadLine());
+                    Assert.That(reader.ReadLine(), Is.EqualTo(string.Format("{0}{1}", "  --string-array=<value,value,..>".PadRight(OptionsParser.HelpOutputColumnPadding), HelpOptionsWithCollections.HelpText)));
+                    Assert.That(reader.ReadLine(), Is.EqualTo(string.Format("{0}{1}", "  --string-list=<custom,custom,..>".PadRight(OptionsParser.HelpOutputColumnPadding), HelpOptionsWithCollections.HelpText)));
                 }
             }
         }
@@ -893,15 +893,15 @@ namespace Unity.Options.Tests
         [Test]
         public void TestHelpRequested_WhenRequested()
         {
-            Assert.IsTrue(OptionsParser.HelpRequested(new[] { "--help" }));
-            Assert.IsTrue(OptionsParser.HelpRequested(new[] { "--h" }));
-            Assert.IsTrue(OptionsParser.HelpRequested(new[] { "--other", "--help" }));
+            Assert.That(OptionsParser.HelpRequested(new[] { "--help" }), Is.True);
+            Assert.That(OptionsParser.HelpRequested(new[] { "--h" }), Is.True);
+            Assert.That(OptionsParser.HelpRequested(new[] { "--other", "--help" }), Is.True);
         }
 
         [Test]
         public void TestHelpRequested_WhenNotRequested()
         {
-            Assert.IsFalse(OptionsParser.HelpRequested(new[] { "--other", "--other2"}));
+            Assert.That(OptionsParser.HelpRequested(new[] { "--other", "--other2"}), Is.False);
         }
 
         [Test]
